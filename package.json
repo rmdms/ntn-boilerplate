@@ -20,7 +20,8 @@
     "nuxt": "^2.0.0",
     "postprocessing": "^6.5.0",
     "simplex-noise": "^2.4.0",
-    "three": "^0.104.0"
+    "three": "^0.127.0",
+    "three-instanced-mesh": "^0.96.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
