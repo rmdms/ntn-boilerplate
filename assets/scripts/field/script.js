@@ -128,7 +128,7 @@ class Particles {
         const uniforms = {
             uTime: { type: "f", value: 0.0 },
             uResolution: { type: "v2", value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-            uTexture: { type: "sampler2D", value: new THREE.TextureLoader().load("images/texture-grass.png") },
+            uTexture: { type: "sampler2D", value: new THREE.TextureLoader().load("../images/texture-grass.png") },
             uMap: { type: "sampler2D", value: this.flowmap.textureTarget.texture },
             uDirection: { type: "f", value: 0.0 },
             uMouseX: { type: "f", value: this.mouse.x },
