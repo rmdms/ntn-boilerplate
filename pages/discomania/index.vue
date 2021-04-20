@@ -2,7 +2,10 @@
   <main id="main" v-if="load">
     <a class="link__back" href="/">Rémy Dumas</a>
     <div class="section_player">
-      <p class="button__play">Play</p>
+      <div class="container">
+        <p class="button__load">Loading</p>
+        <p class="button__play">Play</p>
+      </div>
       <p class="text__explain">This project is an audiovisualization, put on your headphones for a better experience.</p>
       <p class="text__safari" v-if="isSafari">Don't forget to accept the sound content reading.</p>
     </div>
@@ -110,18 +113,33 @@ export default {
       height: 100%;
       overflow: hidden;
       z-index: 2;
-      .button__play {
-        padding: 25px;
-        margin-bottom: 40px; 
-        border: white solid 2px;
-        border-radius: 25%;
-        text-transform: uppercase;
-        font-weight: 900;
-        transition: all 0.5s ease;
-        &:hover {
-          background: white;
-          color: black;
+      .container {
+        position: relative;
+        margin-bottom: 20px; 
+        .button__load {
+          position: absolute;
+          bottom: 0; left: 0;
+          display: block;
+          width: 100%;
+          text-align: center;
+          padding: 25px 0;
+          text-transform: uppercase;
+          font-weight: 900;
+        }
+        .button__play {
+          opacity: 0;
+          visibility: hidden;
+          padding: 25px;
+          border: white solid 2px;
+          border-radius: 25%;
+          text-transform: uppercase;
+          font-weight: 900;
           transition: all 0.5s ease;
+          &:hover {
+            background: white;
+            color: black;
+            transition: all 0.5s ease;
+          }
         }
       }
       .text__explain {

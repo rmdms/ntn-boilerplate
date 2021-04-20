@@ -72,6 +72,20 @@ class App {
     this.MORPH_GROUP = new THREE.Group()
 
     /* INITIALIZE */
+    this.SOUND_OBJECT = new Sound(this.SOUND_URL, this.SOUND_BPM, this.SOUND_OFFSET, this.load.bind(this), this.SOUND_DEBUG)
+
+  }
+
+  /* ------------------  FUNCTIONS  ------------------ */
+
+  /* FUNCTION - Load */
+  load() {
+    TweenMax.to(document.querySelector('.button__load'), 0.75, {
+      autoAlpha: 0
+    })
+    TweenMax.to(document.querySelector('.button__play'), 0.75, {
+      autoAlpha: 1
+    })
     document.querySelector('.button__play').addEventListener('click', () => {
       TweenMax.to(document.querySelector('.text_ref'), 0.75, {
         autoAlpha: 0.5
@@ -88,18 +102,14 @@ class App {
       TweenMax.to(document.querySelector('.section_player'), 0.75, {
         autoAlpha: 0,
         onComplete: () => {
-          this.SOUND_OBJECT = new Sound(this.SOUND_URL, this.SOUND_BPM, this.SOUND_OFFSET, this.initialize.bind(this), this.SOUND_DEBUG)
+          this.initialize();
         }
       })
     });
-
   }
-
-  /* ------------------  FUNCTIONS  ------------------ */
 
   /* FUNCTION - Initialize */
   initialize() {
-
     /* RENDER */
     this.RENDER_OBJECT = new THREE.WebGLRenderer({
       alpha: this.RENDER_ALPA,
