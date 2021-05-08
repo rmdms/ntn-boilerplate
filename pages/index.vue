@@ -10,6 +10,7 @@
           <a href="/flower"><li>Flower</li></a>
           <a href="/discomania"><li>Discomania</li></a>
           <a href="/illuminate"><li>Illuminate</li></a>
+          <a href="/field"><li>Summer field</li></a>
           <a href="/attract"><li>Attract</li></a>
           <a href="/photography"><li>Photography</li></a>
         </ul>
