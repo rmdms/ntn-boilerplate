@@ -2,7 +2,7 @@
   <main id="main" v-if="load">
     <div id="content__informations">
       <section class="section__introduction">
-        <p>My name is Rémy Dumas, I'm a young creative developer based in Paris, France. Passionate about digital art and creative technologies, I am currently looking to join an interactive design studio as a creative developer. </p>
+        <p>My name is Rémy Dumas, I'm a young creative developer based in Paris, France. Passionate about digital art and creative technologies, I am currently looking for engaged and creative projects as a creative developer. </p>
       </section>
       <section class="section__projects">
         <h2 class="tt__subtitle fs__sm">Projects</h2>
