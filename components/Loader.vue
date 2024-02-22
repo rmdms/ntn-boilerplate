@@ -31,25 +31,15 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 #loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: auto;
-  min-height: 100vh;
-  width: 100%;
-  background: rgba(255,255,255,1.0);
-  color: #141414;
-}
-.is {
-  &__desktop {
-    #loader {
-    }
-  }
-  &__mobile {
-    #loader {
-    }
-  }
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+	 height: auto;
+	 min-height: 100vh;
+	 width: 100%;
+	 background: rgba(255, 255, 255, 1.0);
+	 color: #141414;
 }
 </style>

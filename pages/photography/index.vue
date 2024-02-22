@@ -595,143 +595,135 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-  #portfolio {
-    .tt__title {
-      font-family: 'Rama Gothic C', sans-serif;
-      line-height: 0.8;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-    .tt__subtitle {
-      font-family: 'Yantramanav', sans-serif;
-      letter-spacing: 1px;
-      font-weight: 400;
-    }
-    p.tt__subtitle {
-        color: #dfd5ad;
-      }
-    .fs {
-      &__sm { 
-        font-size: 12px; 
-      }
-      &__md {
-        font-size: 16px;
-      }
-      &__lg {
-        font-size: 5.95vw;
-      }
-      &__xl {
-        font-size: 300px;
-      }
-    }
-    @media (max-width: 1200px) {
-      .fs__xl {
-        font-size: 25vw;
-      }
-    }
-    @media (max-width: 900px) {
-      canvas {
-        display: none;
-      }
-    }
-    @media (max-width: 800px) {
-      .fs__lg {
-        font-size: 47.6px;
-      }
-    }
-    @media (max-width: 400px) {
-      body {
-        font-size: 14px;
-      }
-      .fs__xl {
-        font-size: 100px;
-      }
-    }
-  }
-  .section__works {
-    position: relative;
-    height: 100%;
-    min-height: 100vh;
-    width: 100vw;
-    opacity: 0;
-    z-index: 2;
-    .link__back {
-      position: absolute;
-      top: 0; left: 0;
-      margin: 5vh 0 0 7.5vw;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .works__slider {
-      .slider {
-        &__wrapper {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          .slide {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            overflow: hidden;
-            &:first-child {
-              z-index: 2;
-            }
-            &:not(:first-child) {
-              opacity: 0.0;
-              visibility: hidden;
-            }
-            a.tt__title {
-              overflow: hidden;
-              display: inherit;
-            }
-            p { 
-              margin-right: 10%;
-              margin-bottom: 1.5%;
-            }
-            a.tt__subtitle {
-              opacity: 0.0;
-              transition: opacity 0.25s;
-            }
-            &:hover {
-              a.tt__subtitle  {
-                opacity: 1.0;
-                transition: opacity 0.25s;
-              }
-            }
-          }
-        }
-        &__scrollbar {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            height: 2px;
-            width: 20%;
-            min-width: 250px;
-            margin: 0 auto;
-            background: #4f4f4f;
-            border-radius: 50px;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            .scrollbar__current {
-                height: 2px;
-                width: 0;
-                background: #fff;
-                border-radius: 50px;
-            }
-        }
-      }
-    }
-    .tt__title {
-      line-height: 0.8;
-    }
-    @media (max-width: 400px) {
-      .works__slider .slider__wrapper .slide p {
-        margin-right: 5% ;
-      }
-    }
-  }
+<style scoped>
+  #portfolio .tt__title {
+	 font-family: 'Rama Gothic C', sans-serif;
+	 line-height: 0.8;
+	 font-weight: 900;
+	 text-transform: uppercase;
+}
+ #portfolio .tt__subtitle {
+	 font-family: 'Yantramanav', sans-serif;
+	 letter-spacing: 1px;
+	 font-weight: 400;
+}
+ #portfolio p.tt__subtitle {
+	 color: #dfd5ad;
+}
+ #portfolio .fs__sm {
+	 font-size: 12px;
+}
+ #portfolio .fs__md {
+	 font-size: 16px;
+}
+ #portfolio .fs__lg {
+	 font-size: 5.95vw;
+}
+ #portfolio .fs__xl {
+	 font-size: 300px;
+}
+ @media (max-width: 1200px) {
+	 #portfolio .fs__xl {
+		 font-size: 25vw;
+	}
+}
+ @media (max-width: 900px) {
+	 #portfolio canvas {
+		 display: none;
+	}
+}
+ @media (max-width: 800px) {
+	 #portfolio .fs__lg {
+		 font-size: 47.6px;
+	}
+}
+ @media (max-width: 400px) {
+	 #portfolio body {
+		 font-size: 14px;
+	}
+	 #portfolio .fs__xl {
+		 font-size: 100px;
+	}
+}
+ .section__works {
+	 position: relative;
+	 height: 100%;
+	 min-height: 100vh;
+	 width: 100vw;
+	 opacity: 0;
+	 z-index: 2;
+}
+ .section__works .link__back {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 margin: 5vh 0 0 7.5vw;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ .section__works .works__slider .slider__wrapper {
+	 position: relative;
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+	 height: 100vh;
+}
+ .section__works .works__slider .slider__wrapper .slide {
+	 position: absolute;
+	 display: flex;
+	 flex-direction: column;
+	 align-items: flex-end;
+	 overflow: hidden;
+}
+ .section__works .works__slider .slider__wrapper .slide:first-child {
+	 z-index: 2;
+}
+ .section__works .works__slider .slider__wrapper .slide:not(:first-child) {
+	 opacity: 0;
+	 visibility: hidden;
+}
+ .section__works .works__slider .slider__wrapper .slide a.tt__title {
+	 overflow: hidden;
+	 display: inherit;
+}
+ .section__works .works__slider .slider__wrapper .slide p {
+	 margin-right: 10%;
+	 margin-bottom: 1.5%;
+}
+ .section__works .works__slider .slider__wrapper .slide a.tt__subtitle {
+	 opacity: 0;
+	 transition: opacity 0.25s;
+}
+ .section__works .works__slider .slider__wrapper .slide:hover a.tt__subtitle {
+	 opacity: 1;
+	 transition: opacity 0.25s;
+}
+ .section__works .works__slider .slider__scrollbar {
+	 position: fixed;
+	 bottom: 80px;
+	 left: 50%;
+	 height: 2px;
+	 width: 20%;
+	 min-width: 250px;
+	 margin: 0 auto;
+	 background: #4f4f4f;
+	 border-radius: 50px;
+	 transform: translate(-50%, -50%);
+	 z-index: 1;
+}
+ .section__works .works__slider .slider__scrollbar .scrollbar__current {
+	 height: 2px;
+	 width: 0;
+	 background: #fff;
+	 border-radius: 50px;
+}
+ .section__works .tt__title {
+	 line-height: 0.8;
+}
+ @media (max-width: 400px) {
+	 .section__works .works__slider .slider__wrapper .slide p {
+		 margin-right: 5%;
+	}
+}
+ 
 </style>

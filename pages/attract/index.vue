@@ -51,84 +51,89 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-  #main {
-    position: relative;
-    margin: 5vh 7.5vw;
-    canvas {
-      height: 100vh;
-      widows: 100vw;
-      background: black;
-    }
-    .link__back {
-      position: absolute;
-      top: 0; left: 0;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .text_ref {
-      position: absolute;
-      bottom: 0; right: 0;
-      font-size: 14px;
-      opacity: 0.5;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .text_informations {
-      position: absolute;
-      bottom: 0; left: 0;
-      font-size: 14px;
-      opacity: 0.5;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .button__play {
-      position: absolute;
-      bottom: 50%; left: 50%;
-      text-transform: uppercase;
-      transform: translate(-50%, -50%);
-      overflow: hidden;
-      z-index: 2;
-    }
-  }
-  .is {
-    &__desktop {
-      #main {
-        height: calc(100vh - 10vh);
-        .text_ref {
-          bottom: 0; right: 0;
-        }
-        .text_informations {
-          bottom: 0; left: 0;
-        }
-        @media (max-width: 600px) {
-          .text_ref {
-            bottom: 0; left: 50%;
-            transform: translateX(-50%);
-          }
-          .text_informations {
-            bottom: 25px; left: 50%;
-            transform: translateX(-50%);
-          }
-        }
-      }
-    }
-    &__mobile {
-      #main {
-        height: 90vh;
-        .text_ref {
-          bottom: 0; left: 50%;
-          transform: translateX(-50%);
-        }
-        .text_informations {
-          bottom: 25px; left: 50%;
-          transform: translateX(-50%);
-        }
-      }
-    }
-  }
+<style scoped>
+#main {
+	 position: relative;
+	 margin: 5vh 7.5vw;
+}
+ #main canvas {
+	 height: 100vh;
+	 widows: 100vw;
+	 background: black;
+}
+ #main .link__back {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ #main .text_ref {
+	 position: absolute;
+	 bottom: 0;
+	 right: 0;
+	 font-size: 14px;
+	 opacity: 0.5;
+	 text-align: center;
+	 white-space: nowrap;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ #main .text_informations {
+	 position: absolute;
+	 bottom: 0;
+	 left: 0;
+	 font-size: 14px;
+	 opacity: 0.5;
+	 text-align: center;
+	 white-space: nowrap;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ #main .button__play {
+	 position: absolute;
+	 bottom: 50%;
+	 left: 50%;
+	 text-transform: uppercase;
+	 transform: translate(-50%, -50%);
+	 overflow: hidden;
+	 z-index: 2;
+}
+ .is__desktop #main {
+	 height: calc(100vh - 10vh);
+}
+ .is__desktop #main .text_ref {
+	 bottom: 0;
+	 right: 0;
+}
+ .is__desktop #main .text_informations {
+	 bottom: 0;
+	 left: 0;
+}
+ @media (max-width: 600px) {
+	 .is__desktop #main .text_ref {
+		 bottom: 0;
+		 left: 50%;
+		 transform: translateX(-50%);
+	}
+	 .is__desktop #main .text_informations {
+		 bottom: 25px;
+		 left: 50%;
+		 transform: translateX(-50%);
+	}
+}
+ .is__mobile #main {
+	 height: 90vh;
+}
+ .is__mobile #main .text_ref {
+	 bottom: 0;
+	 left: 50%;
+	 transform: translateX(-50%);
+}
+ .is__mobile #main .text_informations {
+	 bottom: 25px;
+	 left: 50%;
+	 transform: translateX(-50%);
+}
+ 
 </style>

@@ -107,19 +107,5 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-#pointer {
-}
-.is {
-  &__desktop {
-    #pointer {
-        
-    }
-  }
-  &__mobile {
-    #pointer {
-        
-    }
-  }
-}
+<style scoped>
 </style>

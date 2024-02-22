@@ -92,30 +92,24 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-#pointer {
+<style scoped>
+.is__desktop #pointer {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 z-index: 999;
+	 pointer-events: none;
+	 mix-blend-mode: difference;
 }
-.is {
-  &__desktop {
-    #pointer {
-      position: absolute;
-      top: 0; left: 0;
-      z-index: 999;
-      pointer-events: none;
-      mix-blend-mode: difference;
-      .svg {
-        position: absolute;
-        height: 100px;
-        width: 100px;
-        pointer-events: none;
-        mix-blend-mode: difference;
-      }
-    }
-  }
-  &__mobile {
-    #pointer {
-        display: none;
-    }
-  }
+ .is__desktop #pointer .svg {
+	 position: absolute;
+	 height: 100px;
+	 width: 100px;
+	 pointer-events: none;
+	 mix-blend-mode: difference;
 }
+ .is__mobile #pointer {
+	 display: none;
+}
+ 
 </style>

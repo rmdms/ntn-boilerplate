@@ -1018,76 +1018,60 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-  #main {
-    #content__informations {
-      position: relative;
-      margin: 0 17vw 0 17vw;
-      // margin: 0 50vw 0 17vw;
-      padding-top: 40vh;
-      max-width: 300px;
-      z-index: 2;
-      h2 {
-        margin-bottom: 40px;
-      }
-    }
-    #content__visual {
-      // position: absolute;
-      // top: 0; left: 0;
-      // display: flex;
-      // justify-content: center;
-      width: 100%;
-      padding-top: 25vh;
-      z-index: 1;
-      span {
-        display: block;
-      }
-      p {
-        color: rgba(25, 25, 25, 0.95);
-        max-width: 40vw;
-        font-size: 50vh;
-        font-family: 'C';
-        line-height: 1.0;
-      }
-    }
-    #content__visual {
-      position: absolute;
-      bottom: 0; right: -5vw;
-      z-index: 1;
-      img {
-        height: 75vh;
-        width: auto;
-        transform: rotateY(180deg);
-      }
-    }
-  }
-  .is {
-    &__desktop {
-      #main {
-        #content__informations {
-          max-width: 400px;
-          h1, h2, p, li {
-            overflow: hidden;
-          }
-        }
-        #content__visual {
-          // display: none;
-          // color: rgba(15, 15, 15, 0.95);
-          max-width: 70vw;
-          @media (max-width: 800px) {
-            width: 564px;
-            max-width: initial;
-            right: -40px;
-          }
-        }
-      }
-    }
-    &__mobile {
-      #main {
-        #content__visual {
-          display: none;
-        }
-      }
-    }
-  }
+<style scoped>
+  #main #content__informations {
+	 position: relative;
+	 margin: 0 17vw 0 17vw;
+	 padding-top: 40vh;
+	 max-width: 300px;
+	 z-index: 2;
+}
+ #main #content__informations h2 {
+	 margin-bottom: 40px;
+}
+ #main #content__visual {
+	 width: 100%;
+	 padding-top: 25vh;
+	 z-index: 1;
+}
+ #main #content__visual span {
+	 display: block;
+}
+ #main #content__visual p {
+	 color: rgba(25, 25, 25, 0.95);
+	 max-width: 40vw;
+	 font-size: 50vh;
+	 font-family: 'C';
+	 line-height: 1;
+}
+ #main #content__visual {
+	 position: absolute;
+	 bottom: 0;
+	 right: -5vw;
+	 z-index: 1;
+}
+ #main #content__visual img {
+	 height: 75vh;
+	 width: auto;
+	 transform: rotateY(180deg);
+}
+ .is__desktop #main #content__informations {
+	 max-width: 400px;
+}
+ .is__desktop #main #content__informations h1, .is__desktop #main #content__informations h2, .is__desktop #main #content__informations p, .is__desktop #main #content__informations li {
+	 overflow: hidden;
+}
+ .is__desktop #main #content__visual {
+	 max-width: 70vw;
+}
+ @media (max-width: 800px) {
+	 .is__desktop #main #content__visual {
+		 width: 564px;
+		 max-width: initial;
+		 right: -40px;
+	}
+}
+ .is__mobile #main #content__visual {
+	 display: none;
+}
 </style>

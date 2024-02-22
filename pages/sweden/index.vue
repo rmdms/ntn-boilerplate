@@ -135,80 +135,66 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   #main {
-    position: relative;
-    height: calc(100vh - 10vh);
-    margin: 5vh 7.5vw;
-    canvas {
-      height: 100vh;
-      widows: 100vw;
-      background: black;
-    }
-    .link__back {
-      position: absolute;
-      top: 0; left: 0;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .link__pictures {
-      position: absolute;
-      top: 0; right: 0;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .section_pictures {
-      position: absolute;
-      top: 0; left: 0;
-      margin: 5vw 5vh;
-      .img {
-        margin: 5vw 5vh;
-        &.img-horizontal {
-          width: calc(75% - 4vw);
-        }
-        &.img-vertical {
-          width: calc(55% - 4vw);
-        }
-        &:nth-child(even) {
-          float: left;
-        }
-        &:nth-child(odd) {
-          float: right;
-        }
-        img {
-          width: 100%;
-        }
-      }
-      // .img-horizontal {
-      //   img {
-      //     width: 100%;
-      //   }
-      // }
-    }
-  }
-  .is {
-    &__desktop {
-      #main {
-        .img {
-          @media (max-width: 600px) {
-            float: inherit !important;
-            margin: 50px auto;
-            width: 100% !important;
-          }
-        }
-      }
-    }
-    &__mobile {
-      #main {
-        .img {
-          float: inherit !important;
-          margin: 50px auto;
-          width: 100% !important;
-        }
-        .section_pictures {
-          // position: relative;
-        }
-      }
-    }
-  }
+	 position: relative;
+	 height: calc(100vh - 10vh);
+	 margin: 5vh 7.5vw;
+}
+ #main canvas {
+	 height: 100vh;
+	 widows: 100vw;
+	 background: black;
+}
+ #main .link__back {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ #main .link__pictures {
+	 position: absolute;
+	 top: 0;
+	 right: 0;
+	 overflow: hidden;
+	 z-index: 2;
+}
+ #main .section_pictures {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 margin: 5vw 5vh;
+}
+ #main .section_pictures .img {
+	 margin: 5vw 5vh;
+}
+ #main .section_pictures .img.img-horizontal {
+	 width: calc(75% - 4vw);
+}
+ #main .section_pictures .img.img-vertical {
+	 width: calc(55% - 4vw);
+}
+ #main .section_pictures .img:nth-child(even) {
+	 float: left;
+}
+ #main .section_pictures .img:nth-child(odd) {
+	 float: right;
+}
+ #main .section_pictures .img img {
+	 width: 100%;
+}
+ @media (max-width: 600px) {
+	 .is__desktop #main .img {
+		 float: inherit !important;
+		 margin: 50px auto;
+		 width: 100% !important;
+	}
+}
+ .is__mobile #main .img {
+	 float: inherit !important;
+	 margin: 50px auto;
+	 width: 100% !important;
+}
+ 
 </style>
