@@ -244,8 +244,8 @@ class App {
 
     /* KICK */
     this.SOUND_OBJECT.createKick({
-      frequency: [220, 255],
-      threshold: 20,
+      frequency: [210, 255],
+      threshold: 5,
       decay: 50,
       onKick: this.sound_kick_on.bind(this),
       offKick: this.sound_kick_off.bind(this)
