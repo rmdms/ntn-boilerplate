@@ -1,13 +1,14 @@
-import { MAX_FFT_SIZE } from "../core/audio";
-
-/** Analyser FFT size: the largest the audio system allows. */
-export const FFT_SIZE = MAX_FFT_SIZE;
+/** Legacy analyser FFT size (2^14): one bin per vertex of the top-level sphere. */
+export const FFT_SIZE = 16384;
 
 /**
  * Bins spread over the sphere: the lower half of the analyser output, which is the
  * 0 – sampleRate/4 band the legacy sphere displayed (4096 vertices on 4096 of 8192 bins).
  */
 export const DISPLAYED_BINS = FFT_SIZE / 4;
+
+/** Displayed bins laid out as a square texture, small enough for any mobile MAX_TEXTURE_SIZE. */
+export const BIN_TEXTURE_SIZE = Math.sqrt(DISPLAYED_BINS);
 
 /** Seconds between two colour changes (legacy: 60 frames). */
 export const COLOUR_INTERVAL = 1;

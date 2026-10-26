@@ -1,12 +1,15 @@
 import {
   BufferAttribute,
+  DataTexture,
   DirectionalLight,
   LinearSRGBColorSpace,
   Mesh,
   MeshStandardMaterial,
   PerspectiveCamera,
+  RedFormat,
   Scene,
   SphereGeometry,
+  UnsignedByteType,
   type WebGLRenderer,
 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -16,6 +19,7 @@ import { disposeObject } from "../core/dispose";
 import type { Experience, ViewportSize } from "../core/experience";
 import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
 import {
+  BIN_TEXTURE_SIZE,
   binIndices,
   createColourCadence,
   DISPLAYED_BINS,
@@ -57,6 +61,15 @@ function createSphereGeometry(segments: number) {
 export function createFlower(options: FlowerOptions): FlowerExperience {
   const audio = createExperienceAudio("flower", { fftSize: FFT_SIZE });
   const colourCadence = createColourCadence();
+  // The displayed band of the analyser output, shared with the audio track and uploaded as a square texture.
+  const frequency = new DataTexture(
+    audio.frequencyData.subarray(0, DISPLAYED_BINS),
+    BIN_TEXTURE_SIZE,
+    BIN_TEXTURE_SIZE,
+    RedFormat,
+    UnsignedByteType,
+  );
+  frequency.needsUpdate = true;
   let renderer: WebGLRenderer | null = null;
   let scene: Scene | null = null;
   let camera: PerspectiveCamera | null = null;
@@ -83,7 +96,7 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
 
   const experience: FlowerExperience = {
     audio,
-    quality: { levels: FLOWER_QUALITY.length, initial: 2 },
+    quality: { levels: FLOWER_QUALITY.length, initial: FLOWER_QUALITY.length - 1 },
 
     async load(ctx) {
       const assets = await loadEssentials("flower", {
@@ -106,7 +119,7 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
 
       const material = new MeshStandardMaterial({ flatShading: true });
       material.onBeforeCompile = (shader) => {
-        shader.uniforms.uFrequency = { value: audio.texture };
+        shader.uniforms.uFrequency = { value: frequency };
         shader.vertexShader = shader.vertexShader
           .replace("void main() {", `${displacementPars}\nvoid main() {`)
           .replace("#include <begin_vertex>", displacementVertex);
@@ -141,6 +154,7 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
     update(dt) {
       if (!renderer || !scene || !camera || !sphere) return;
       audio.update(dt);
+      frequency.needsUpdate = true;
       controls?.update(dt);
 
       if (colourCadence(dt, isLoud(audio.frequencyData)))
@@ -169,6 +183,7 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
       controls?.dispose();
       controls = null;
       audio.dispose();
+      frequency.dispose();
       if (scene) disposeObject(scene);
       scene = null;
       sphere = null;

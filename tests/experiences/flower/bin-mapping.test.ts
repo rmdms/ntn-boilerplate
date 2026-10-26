@@ -1,6 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { SphereGeometry } from "three";
+import { MAX_FFT_SIZE } from "../../../app/experiences/core/audio";
 import {
+  BIN_TEXTURE_SIZE,
   binIndices,
   COLOUR_INTERVAL,
   createColourCadence,
@@ -68,8 +70,22 @@ describe("FLOWER_QUALITY", () => {
     expect(ordered).toBe(true);
   });
 
-  it("should keep the FFT within 2048 when configured", () => {
-    expect(FFT_SIZE).toBeLessThanOrEqual(2048);
+  it("should use the legacy 2^14 FFT when configured", () => {
+    expect(FFT_SIZE).toBe(16384);
+  });
+
+  it("should keep the FFT within what the audio system accepts when configured", () => {
+    expect(FFT_SIZE).toBeLessThanOrEqual(MAX_FFT_SIZE);
+  });
+
+  it("should give each vertex of the top-level sphere its own bin, like legacy", () => {
+    const top = FLOWER_QUALITY[FLOWER_QUALITY.length - 1]!;
+    const indices = binIndices(sphereVertexCount(top.segments), DISPLAYED_BINS);
+    expect(indices.every((bin, i) => bin === i)).toBe(true);
+  });
+
+  it("should lay the displayed bins out as a square texture within 4096 px a side", () => {
+    expect([BIN_TEXTURE_SIZE * BIN_TEXTURE_SIZE, BIN_TEXTURE_SIZE <= 4096]).toEqual([DISPLAYED_BINS, true]);
   });
 });
 

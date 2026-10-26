@@ -24,7 +24,7 @@ export interface AudioEnvironment {
 export interface AudioTrackOptions {
   url: string;
   segments: readonly string[];
-  /** At most `MAX_FFT_SIZE`. */
+  /** Defaults to `DEFAULT_FFT_SIZE`, at most `MAX_FFT_SIZE`. */
   fftSize?: number;
   smoothing?: number;
 }
@@ -54,8 +54,11 @@ export interface AudioSystem {
   track(options: AudioTrackOptions): AudioTrack;
 }
 
-/** Largest analyser FFT size (KTD7). */
-export const MAX_FFT_SIZE = 2048;
+/** Analyser FFT size when a track does not ask for one (KTD7). */
+export const DEFAULT_FFT_SIZE = 2048;
+
+/** Largest analyser FFT size Web Audio accepts. */
+export const MAX_FFT_SIZE = 32768;
 
 const ZERO_FALLBACK_SECONDS = 1;
 const SEGMENTS_AHEAD = 2;
@@ -86,7 +89,7 @@ export function createAudioSystem(env: AudioEnvironment): AudioSystem {
 
   return {
     track(options) {
-      const fftSize = Math.min(options.fftSize ?? MAX_FFT_SIZE, MAX_FFT_SIZE);
+      const fftSize = Math.min(options.fftSize ?? DEFAULT_FFT_SIZE, MAX_FFT_SIZE);
       const smoothing = options.smoothing ?? 0.8;
       const entry = getElement(options.url);
       const { element } = entry;
