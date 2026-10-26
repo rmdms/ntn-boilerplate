@@ -195,6 +195,13 @@ export async function loadEntries(
     publish({ phase: ratio >= 1 ? "ready" : "loading", ratio });
   };
 
+  const fail = () =>
+    publish(
+      signal?.aborted
+        ? { phase: "idle", ratio: 0 }
+        : { phase: "error", ratio: reported },
+    );
+
   publish({ phase: "loading", ratio: 0 });
   let buffers: ArrayBuffer[];
   try {
@@ -210,14 +217,16 @@ export async function loadEntries(
       }),
     );
   } catch (error) {
-    publish(
-      signal?.aborted
-        ? { phase: "idle", ratio: 0 }
-        : { phase: "error", ratio: reported },
-    );
+    fail();
     throw error;
   }
   report();
+
+  // Experiences may abort between steps (throwIfAborted), outside any step() call.
+  const onAbort = () => {
+    if (reported < 1) fail();
+  };
+  signal?.addEventListener("abort", onAbort, { once: true });
 
   const byUrl = new Map(
     entries.map((entry, index) => [entry.url, buffers[index]!]),
@@ -233,9 +242,16 @@ export async function loadEntries(
     json: (url) => parseJson(bytes(url)),
     image: (url, imageOptions) => decodeImage(url, bytes(url), imageOptions),
     async step(work) {
-      const result = typeof work === "function" ? await work() : await work;
+      let result;
+      try {
+        result = typeof work === "function" ? await work() : await work;
+      } catch (error) {
+        fail();
+        throw error;
+      }
       stepsDone = Math.min(steps, stepsDone + 1);
       report();
+      if (reported >= 1) signal?.removeEventListener("abort", onAbort);
       return result;
     },
   };

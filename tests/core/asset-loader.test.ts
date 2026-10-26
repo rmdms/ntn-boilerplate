@@ -172,6 +172,45 @@ describe("loadEntries", () => {
     expect(tracker.status.phase).toBe("idle");
   });
 
+  it("should surface an error state when a post-download step rejects", async () => {
+    const tracker = createLoadTracker();
+    const assets = await loadEntries(twoAssets, {
+      fetch: fakeFetch({ "/a.bin": { size: 300 }, "/b.bin": { size: 700 } }),
+      steps: 2,
+      tracker,
+    });
+    await assets.step(Promise.reject(new Error("decode failed"))).catch(() => {});
+    expect(tracker.status.phase).toBe("error");
+  });
+
+  it("should return the tracker to idle when the load is aborted between steps", async () => {
+    const tracker = createLoadTracker();
+    const abort = new AbortController();
+    const assets = await loadEntries(twoAssets, {
+      fetch: fakeFetch({ "/a.bin": { size: 300 }, "/b.bin": { size: 700 } }),
+      signal: abort.signal,
+      steps: 2,
+      tracker,
+    });
+    await assets.step(Promise.resolve());
+    abort.abort();
+    expect(tracker.status.phase).toBe("idle");
+  });
+
+  it("should stay ready when the signal aborts after every step finished", async () => {
+    const tracker = createLoadTracker();
+    const abort = new AbortController();
+    const assets = await loadEntries(twoAssets, {
+      fetch: fakeFetch({ "/a.bin": { size: 300 }, "/b.bin": { size: 700 } }),
+      signal: abort.signal,
+      steps: 1,
+      tracker,
+    });
+    await assets.step(Promise.resolve());
+    abort.abort();
+    expect(tracker.status.phase).toBe("ready");
+  });
+
   it("should ignore a stale load when a newer one has begun", async () => {
     const tracker = createLoadTracker();
     const gates = { "/a.bin": gate(), "/b.bin": gate() };
