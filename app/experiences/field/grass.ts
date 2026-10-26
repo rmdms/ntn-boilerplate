@@ -14,7 +14,8 @@ import type { PointerState } from "../core/experience";
 import { levelAt } from "../core/quality";
 
 export const MAX_BLADES = 2000;
-export const BLADE_SEGMENTS = 4;
+// Legacy blades had 32 height segments; the bend is smooth only at that resolution.
+export const BLADE_SEGMENTS = 32;
 const BLADE_SIZE = 0.2;
 const BLADE_LIFT = 0.1;
 
@@ -28,15 +29,16 @@ export interface FieldQuality {
   bladeRatio: number;
 }
 
-/** Floor first. Stepping down lowers pixel ratio, then bloom resolution, then turns bloom off, then hides blades. */
+/** Floor first; the top level renders exactly like the legacy page. Stepping down lowers pixel ratio, then bloom resolution, then turns bloom off, then hides blades. */
 export const FIELD_QUALITY: readonly FieldQuality[] = [
   { pixelRatio: 0.65, bloomScale: 0.25, bloom: false, bladeRatio: 0.5 },
   { pixelRatio: 0.65, bloomScale: 0.25, bloom: false, bladeRatio: 0.75 },
   { pixelRatio: 0.65, bloomScale: 0.25, bloom: false, bladeRatio: 1 },
   { pixelRatio: 0.65, bloomScale: 0.25, bloom: true, bladeRatio: 1 },
   { pixelRatio: 0.65, bloomScale: 0.5, bloom: true, bladeRatio: 1 },
-  { pixelRatio: 0.8, bloomScale: 0.5, bloom: true, bladeRatio: 1 },
-  { pixelRatio: 1, bloomScale: 0.5, bloom: true, bladeRatio: 1 },
+  { pixelRatio: 0.65, bloomScale: 1, bloom: true, bladeRatio: 1 },
+  { pixelRatio: 0.8, bloomScale: 1, bloom: true, bladeRatio: 1 },
+  { pixelRatio: 1, bloomScale: 1, bloom: true, bladeRatio: 1 },
 ];
 
 export function fieldQuality(level: number): FieldQuality {

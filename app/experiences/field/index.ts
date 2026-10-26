@@ -1,5 +1,7 @@
 import {
+  Color,
   DoubleSide,
+  LinearSRGBColorSpace,
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
@@ -7,7 +9,9 @@ import {
   ShaderMaterial,
   SphereGeometry,
   Texture,
+  UnsignedByteType,
   Vector2,
+  WebGLRenderTarget,
   type WebGLRenderer,
 } from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
@@ -39,7 +43,9 @@ import { grassFragmentShader, grassVertexShader } from "./shaders/grass";
 import { skyFragmentShader, skyVertexShader } from "./shaders/sky";
 
 const GRASS_TEXTURE_URL = "/images/texture-grass-1024.webp";
-const BLADE_SEED = 1;
+const BLADE_SEED = 7;
+// r127 scaled the bloom by its strength twice (colour and blend alpha); r186 applies it once, so legacy 0.1 becomes 0.1².
+const BLOOM_STRENGTH = 0.1 * 0.1;
 
 function createSky() {
   const sky = new Mesh(
@@ -57,7 +63,10 @@ function createSky() {
 function createHill() {
   const hill = new Mesh(
     createHillGeometry(),
-    new MeshBasicMaterial({ color: 0x894100, side: DoubleSide }),
+    new MeshBasicMaterial({
+      color: new Color().setHex(0x894100, LinearSRGBColorSpace),
+      side: DoubleSide,
+    }),
   );
   hill.rotation.z = 0.001;
   return hill;
@@ -74,7 +83,7 @@ export function createField(): Experience<void> {
   let image: ImageBitmap | null = null;
   let view = { width: 1, height: 1 };
   let basePixelRatio = 1;
-  let level = Math.floor(FIELD_QUALITY.length / 2);
+  let level = FIELD_QUALITY.length - 1;
   let time = 0;
   let eased: PointerPoint = { x: 0, y: 0 };
   let pointer: PointerState = {
@@ -161,6 +170,8 @@ export function createField(): Experience<void> {
       }
       image = bitmap;
       renderer = ctx.renderer;
+      // Legacy output was linear with raw colours; matching it keeps the exact palette.
+      renderer.outputColorSpace = LinearSRGBColorSpace;
 
       const texture = new Texture(bitmap);
       texture.flipY = false;
@@ -185,9 +196,13 @@ export function createField(): Experience<void> {
       grass = createGrass(hill, grassMaterial, createRandom(BLADE_SEED));
       scene.add(createSky(), hill, grass.mesh);
 
-      composer = new EffectComposer(renderer);
+      // Legacy targets were 8-bit, so values above 1 were clamped before the bloom threshold.
+      composer = new EffectComposer(
+        renderer,
+        new WebGLRenderTarget(1, 1, { type: UnsignedByteType }),
+      );
       composer.addPass(new RenderPass(scene, camera));
-      bloomPass = new UnrealBloomPass(new Vector2(1, 1), 0.1, 1, 0.5);
+      bloomPass = new UnrealBloomPass(new Vector2(1, 1), BLOOM_STRENGTH, 1, 0.5);
       composer.addPass(bloomPass);
       composer.addPass(new OutputPass());
 

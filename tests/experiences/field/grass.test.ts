@@ -100,7 +100,7 @@ describe("field grass quality", () => {
     ]).toEqual([MAX_BLADES / 2, MAX_BLADES, true, before]);
   });
 
-  it("should build blades with a handful of segments when the grass is created", () => {
+  it("should build blades with one column of legacy height segments when the grass is created", () => {
     const grass = createGrass(
       hillMesh(),
       new MeshBasicMaterial(),

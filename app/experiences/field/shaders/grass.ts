@@ -53,7 +53,7 @@ void main() {
   vec3 color1 = vec3(0.5176470588, 0.2470588235, 0.03529411765);
   vec3 color2 = vec3(0.7960784314, 0.7215686275, 0.3568627451) * 1.25;
   vec3 color = mix(color1, color2, vUv.y) + smoothstep(0.25, 1.0, abs(vPendul)) * 0.25;
-  gl_FragColor = sRGBTransferEOTF(vec4(color, 1.0));
+  gl_FragColor = vec4(color, 1.0);
   #include <colorspace_fragment>
 }
 `;
