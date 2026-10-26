@@ -17,3 +17,8 @@ export function createClock(): FrameClock {
     },
   };
 }
+
+/** Share of the remaining distance a per-frame lerp of `rate` at 60 Hz covers in dt seconds, independent of frame rate. */
+export function frameEase(rate: number, dt: number): number {
+  return 1 - (1 - rate) ** (dt * 60);
+}
