@@ -9,7 +9,9 @@ import {
   type Mesh,
 } from "three";
 import { MeshSurfaceSampler } from "three/addons/math/MeshSurfaceSampler.js";
+import { frameEase } from "../core/clock";
 import type { PointerState } from "../core/experience";
+import { levelAt } from "../core/quality";
 
 export const MAX_BLADES = 2000;
 export const BLADE_SEGMENTS = 4;
@@ -38,8 +40,7 @@ export const FIELD_QUALITY: readonly FieldQuality[] = [
 ];
 
 export function fieldQuality(level: number): FieldQuality {
-  const index = MathUtils.clamp(Math.round(level), 0, FIELD_QUALITY.length - 1);
-  return FIELD_QUALITY[index]!;
+  return levelAt(FIELD_QUALITY, Math.round(level));
 }
 
 // Legacy loop kept verbatim: it walks every float, so each sine cascades into the following components.
@@ -149,7 +150,7 @@ export function easePointer(
 ): PointerPoint {
   const targetX = pointer.active ? pointer.x : 0;
   const targetY = pointer.active ? pointer.y : 0;
-  const amount = 1 - (1 - POINTER_EASE) ** (dt * 60);
+  const amount = frameEase(POINTER_EASE, dt);
   return {
     x: current.x + (targetX - current.x) * amount,
     y: current.y + (targetY - current.y) * amount,

@@ -16,6 +16,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { loadEssentials } from "../core/asset-loader";
 import { disposeComposer, disposeObject } from "../core/dispose";
+import { applyPixelRatio, resolvePixelRatio } from "../core/quality";
 import type {
   Experience,
   PointerState,
@@ -85,17 +86,59 @@ export function createField(): Experience<void> {
     wheel: 0,
   };
 
-  const layout = () => {
-    if (!renderer || !composer || !bloomPass || !camera) return;
+  // Last size applied to the composer; it is only rendered with bloom on, so sizing waits until then.
+  let appliedComposer: {
+    pixelRatio: number;
+    bloomScale: number;
+    width: number;
+    height: number;
+  } | null = null;
+
+  const syncComposer = () => {
+    if (!composer || !bloomPass) return;
     const quality = fieldQuality(level);
-    const pixelRatio = basePixelRatio * quality.pixelRatio;
-    renderer.setPixelRatio(pixelRatio);
-    composer.setPixelRatio(pixelRatio);
-    composer.setSize(view.width, view.height);
+    if (!quality.bloom) return;
+    const next = {
+      pixelRatio: basePixelRatio * quality.pixelRatio,
+      bloomScale: quality.bloomScale,
+      width: view.width,
+      height: view.height,
+    };
+    const last = appliedComposer;
+    if (
+      last &&
+      last.pixelRatio === next.pixelRatio &&
+      last.bloomScale === next.bloomScale &&
+      last.width === next.width &&
+      last.height === next.height
+    )
+      return;
+    composer.setPixelRatio(next.pixelRatio);
+    composer.setSize(next.width, next.height);
     bloomPass.setSize(
-      Math.max(1, Math.round(view.width * pixelRatio * quality.bloomScale)),
-      Math.max(1, Math.round(view.height * pixelRatio * quality.bloomScale)),
+      Math.max(
+        1,
+        Math.round(next.width * next.pixelRatio * next.bloomScale),
+      ),
+      Math.max(
+        1,
+        Math.round(next.height * next.pixelRatio * next.bloomScale),
+      ),
     );
+    appliedComposer = next;
+  };
+
+  const applyRatioAndBloom = () => {
+    if (!renderer) return;
+    applyPixelRatio(
+      renderer,
+      resolvePixelRatio(basePixelRatio, fieldQuality(level).pixelRatio),
+    );
+    syncComposer();
+  };
+
+  const applyAspect = () => {
+    if (!camera) return;
     camera.aspect = view.width / view.height;
     camera.updateProjectionMatrix();
   };
@@ -161,6 +204,7 @@ export function createField(): Experience<void> {
     mount(_assets, ctx) {
       view = { width: ctx.size.width, height: ctx.size.height };
       basePixelRatio = ctx.size.pixelRatio;
+      applyAspect();
       experience.setQuality(ctx.quality);
     },
 
@@ -184,12 +228,13 @@ export function createField(): Experience<void> {
     setQuality(next) {
       level = next;
       grass?.setQuality(level);
-      layout();
+      applyRatioAndBloom();
     },
 
     resize(size: ViewportSize) {
       view = { width: size.width, height: size.height };
-      layout();
+      applyAspect();
+      syncComposer();
     },
 
     input(next) {
@@ -199,6 +244,7 @@ export function createField(): Experience<void> {
     dispose() {
       if (scene) disposeObject(scene);
       if (composer) disposeComposer(composer);
+      appliedComposer = null;
       image?.close();
       renderer =
         scene =

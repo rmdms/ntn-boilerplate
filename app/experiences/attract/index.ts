@@ -11,10 +11,13 @@ import {
 } from "three";
 import { loadEssentials } from "../core/asset-loader";
 import type { Experience, ViewportSize } from "../core/experience";
+import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
 import {
+  AT_REST,
   createGrid,
   DOT_RADIUS,
   easeAttraction,
+  needsRender,
   pointerTarget,
   PULL_DISTANCE,
   type Attraction,
@@ -70,6 +73,10 @@ export function createAttract(): Experience<AttractAssets> {
   let view: Size = { width: 1, height: 1 };
   let basePixelRatio = 1;
   let level = LEVELS[2]!;
+  // The canvas keeps its last frame while nothing is drawn, so every change to what it shows sets this.
+  let dirty = true;
+  // Set by resize, consumed by the next update so a burst of observer callbacks rebuilds the grid once.
+  let rebuildPending = false;
   const eased: Attraction = { x: 0, y: 0, strength: 0 };
   let target: Attraction = { x: 0, y: 0, strength: 0 };
 
@@ -94,15 +101,14 @@ export function createAttract(): Experience<AttractAssets> {
     );
     points.geometry.dispose();
     points.geometry = geometry;
+    dirty = true;
+    rebuildPending = false;
   };
 
-  const applyPixelRatio = () => {
+  const applyLevelPixelRatio = () => {
     if (!renderer) return;
-    const ratio =
-      level.pixelRatio === "native"
-        ? Math.max(basePixelRatio, Math.min(window.devicePixelRatio, 2))
-        : basePixelRatio * level.pixelRatio;
-    renderer.setPixelRatio(ratio);
+    const ratio = resolvePixelRatio(basePixelRatio, level.pixelRatio);
+    if (applyPixelRatio(renderer, ratio)) dirty = true;
     material.uniforms.uPixelRatio!.value = ratio;
   };
 
@@ -131,24 +137,32 @@ export function createAttract(): Experience<AttractAssets> {
       renderer.setClearColor(0x000000, 1);
       basePixelRatio = ctx.size.pixelRatio;
       level = LEVELS[ctx.quality] ?? level;
+      dirty = true;
       view = { width: ctx.size.width, height: ctx.size.height };
       grid = createGrid(rasterize);
-      applyPixelRatio();
+      applyLevelPixelRatio();
       fitCamera();
       rebuild();
     },
 
     update(dt) {
+      if (rebuildPending && grid) rebuild();
+      const wasMoving = eased.strength >= AT_REST;
       easeAttraction(eased, target, dt);
+      // The frame that settles to rest is drawn once more so the dots end exactly at rest.
+      if (wasMoving && eased.strength < AT_REST) dirty = true;
+      if (!renderer || !needsRender(eased, target, dirty)) return;
       material.uniforms.uPointer!.value.set(eased.x, eased.y);
       material.uniforms.uStrength!.value = eased.strength;
-      renderer?.render(scene, camera);
+      renderer.render(scene, camera);
+      dirty = false;
     },
 
     setQuality(next) {
       const previous = level;
-      level = LEVELS[Math.max(0, Math.min(LEVELS.length - 1, next))]!;
-      applyPixelRatio();
+      level = levelAt(LEVELS, next);
+      applyLevelPixelRatio();
+      dirty = true;
       if (grid && level.spacing !== previous.spacing) rebuild();
     },
 
@@ -156,7 +170,8 @@ export function createAttract(): Experience<AttractAssets> {
     resize(size: ViewportSize) {
       view = { width: size.width, height: size.height };
       fitCamera();
-      if (grid) rebuild();
+      rebuildPending = true;
+      dirty = true;
     },
 
     input(pointer) {

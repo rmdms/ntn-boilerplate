@@ -1,3 +1,4 @@
+import { frameEase } from "../core/clock";
 import type { PointerState } from "../core/experience";
 
 export interface Size {
@@ -112,10 +113,10 @@ export function attractedPosition(
 
 /** Frame-rate-independent share of the remaining distance covered in dt seconds: 5% per frame at 60 Hz. */
 export function smoothing(dt: number) {
-  return 1 - 0.95 ** (dt * 60);
+  return frameEase(0.05, dt);
 }
 
-const AT_REST = 1e-3;
+export const AT_REST = 1e-3;
 
 export function easeAttraction(
   state: Attraction,
@@ -142,4 +143,13 @@ export function pointerTarget(pointer: PointerState, view: Size): Attraction {
     y: ((1 - pointer.y) / 2) * view.height,
     strength: attracting ? 1 : 0,
   };
+}
+
+/** Whether the frame must be drawn: while attraction is moving or wanted, or when the scene changed. The settling frame is drawn too, so rest is the last thing on screen. */
+export function needsRender(
+  eased: Attraction,
+  target: Attraction,
+  dirty: boolean,
+): boolean {
+  return dirty || target.strength > 0 || eased.strength >= AT_REST;
 }

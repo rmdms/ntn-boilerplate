@@ -5,6 +5,7 @@ import {
   easeAttraction,
   fitRect,
   LEGACY_SOURCE,
+  needsRender,
   pointerTarget,
   smoothing,
   type Raster,
@@ -203,5 +204,26 @@ describe("attract pointer mapping", () => {
       view,
     );
     expect(target.strength).toBe(0);
+  });
+});
+
+describe("attract render decision", () => {
+  const rest = { x: 0, y: 0, strength: 0 };
+  const pressed = { x: 0, y: 0, strength: 1 };
+
+  it("should skip rendering when at rest, not attracting and clean", () => {
+    expect(needsRender(rest, rest, false)).toBe(false);
+  });
+
+  it("should render when the scene is dirty", () => {
+    expect(needsRender(rest, rest, true)).toBe(true);
+  });
+
+  it("should render while the target attracts", () => {
+    expect(needsRender(rest, pressed, false)).toBe(true);
+  });
+
+  it("should render while the eased strength has not settled", () => {
+    expect(needsRender({ x: 0, y: 0, strength: 0.5 }, rest, false)).toBe(true);
   });
 });
