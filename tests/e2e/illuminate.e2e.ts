@@ -103,40 +103,28 @@ test.describe("illuminate", () => {
     await frames(page, 5);
   });
 
-  test("should update the data texture and the light-count uniform without changing the program count when 300 lights are added", async ({
+  test("should update the data texture and the light-count uniform without changing the program count when 60 lights are added", async ({
     page,
   }) => {
-    test.setTimeout(120_000);
     const programs = await probe(page, (e) => e.programs());
     const version = await probe(page, (e) => e.textureVersion());
-    await clickTimes(page, 30, "top");
-    expect(await probe(page, (e) => e.lights())).toBe(300);
-    expect(await probe(page, (e) => e.shaded())).toBe(256);
+    await clickTimes(page, 6, "top");
+    expect(await probe(page, (e) => e.lights())).toBe(60);
+    expect(await probe(page, (e) => e.shaded())).toBe(60);
     expect(await probe(page, (e) => e.textureVersion())).toBeGreaterThan(
       version,
     );
     expect(await probe(page, (e) => e.programs())).toBe(programs);
   });
 
-  test("should reach 400 lights with no shader recompile when clicking 40 times at the top level", async ({
+  test("should trigger the gravity-flip reset on the seventh click, like the live site", async ({
     page,
   }) => {
-    test.setTimeout(120_000);
-    const programs = await probe(page, (e) => e.programs());
-    await clickTimes(page, 40, "top");
-    expect(await probe(page, (e) => e.lights())).toBe(400);
-    expect(await probe(page, (e) => e.programs())).toBe(programs);
-  });
-
-  test("should trigger the gravity-flip reset instead of adding lights when a click would exceed the cap", async ({
-    page,
-  }) => {
-    test.setTimeout(120_000);
-    await clickTimes(page, 12, 0);
-    expect(await probe(page, (e) => e.lights())).toBe(120);
-    await clickTimes(page, 1, 0);
+    await clickTimes(page, 6, "top");
+    expect(await probe(page, (e) => e.lights())).toBe(60);
+    await clickTimes(page, 1, "top");
     // The reset clears lights after 500 ms, which slow frames may already have elapsed: assert no light was added, then the reset.
-    expect(await probe(page, (e) => e.lights() <= 120 && (e.resetting() || e.lights() === 0))).toBe(true);
+    expect(await probe(page, (e) => e.lights() <= 60 && (e.resetting() || e.lights() === 0))).toBe(true);
     await page.waitForFunction(
       () => window.__illuminateProbe!.experience!.lights() === 0,
     );
@@ -145,10 +133,10 @@ test.describe("illuminate", () => {
   test("should give glow sprites to lights beyond the shaded maximum when the quality level is lowered", async ({
     page,
   }) => {
-    await clickTimes(page, 10, "top");
+    await clickTimes(page, 6, "top");
     await setLevel(page, 0);
     await frames(page);
-    expect(await probe(page, (e) => [e.shaded(), e.glows()])).toEqual([48, 52]);
+    expect(await probe(page, (e) => [e.shaded(), e.glows()])).toEqual([48, 12]);
   });
 
   test("should drop lights when a touch press moves 5 px", async ({ page }) => {

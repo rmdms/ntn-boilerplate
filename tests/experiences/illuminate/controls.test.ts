@@ -40,8 +40,8 @@ function press(distance: number, kind: PointerState["kind"] = "touch") {
 }
 
 describe("ILLUMINATE_LEVELS", () => {
-  it("should allow at least 400 lights at the top level", () => {
-    expect(ILLUMINATE_LEVELS.at(-1)!.cap).toBeGreaterThanOrEqual(400);
+  it("should cap every level at the live site's 60 lights so the seventh click resets", () => {
+    expect(ILLUMINATE_LEVELS.every((level) => level.cap === 60)).toBe(true);
   });
 
   it("should never raise shaded lights above the light cap", () => {
@@ -49,19 +49,15 @@ describe("ILLUMINATE_LEVELS", () => {
       true,
     );
   });
-
-  it("should keep more lights than the legacy cap of 60 at the floor", () => {
-    expect(ILLUMINATE_LEVELS[0]!.cap).toBeGreaterThan(60);
-  });
 });
 
 describe("shouldReset", () => {
-  it("should add lights when the drop reaches the cap exactly", () => {
-    expect(shouldReset(390, 400)).toBe(false);
+  it("should add lights while the scene holds 50 or fewer, like the live site", () => {
+    expect(shouldReset(50, 60)).toBe(false);
   });
 
-  it("should reset when the drop would exceed the cap", () => {
-    expect(shouldReset(400, 400)).toBe(true);
+  it("should reset when the scene already holds 60 lights", () => {
+    expect(shouldReset(60, 60)).toBe(true);
   });
 
   it("should drop ten lights per tap", () => {

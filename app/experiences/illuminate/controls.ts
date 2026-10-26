@@ -9,13 +9,13 @@ export interface IlluminateLevel {
   cap: number;
 }
 
-// Index 0 is the floor. Degrading from the top lowers pixel ratio first, then shaded lights and cap.
+// Index 0 is the floor. Degrading from the top lowers pixel ratio first, then shaded lights.
+// Every level keeps the live site's limit: a drop at 60 lights resets the scene, so the seventh click resets.
 export const ILLUMINATE_LEVELS: readonly IlluminateLevel[] = [
-  { pixelRatio: 0.6, shaded: 48, cap: 120 },
-  { pixelRatio: 0.75, shaded: 48, cap: 200 },
-  { pixelRatio: 0.85, shaded: 96, cap: 300 },
-  { pixelRatio: 0.85, shaded: 256, cap: 400 },
-  { pixelRatio: 1, shaded: 256, cap: 400 },
+  { pixelRatio: 0.6, shaded: 48, cap: 60 },
+  { pixelRatio: 0.75, shaded: 48, cap: 60 },
+  { pixelRatio: 0.85, shaded: 60, cap: 60 },
+  { pixelRatio: 1, shaded: 60, cap: 60 },
 ];
 
 export const MAX_SHADED = Math.max(
