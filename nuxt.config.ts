@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 const siteURL = "https://www.remydumas.fr";
 const title = "Rémy Dumas -  Creative Developer";
 const description =
@@ -5,6 +7,10 @@ const description =
 const keywords =
   "Dumas Rémy, Rmdms, Remsdms, Développeur, Developer, Développeur Web, Web Developer, Développeur Front-End, Front-End Developer, Développeur Créatif, Creative Developer, Creative Technologist, Portfolio, Projets, Web Site, MMI, Métiers du Multimédia et de l'Internet, DUT, Diplôme Universitaire et Technologique, Laval, 53000, Pays de la Loire, BDDI, Bachelor Designer & Developpeur Intéractif, DMII, Design et Managenement de l'Innovation Interactive, Gobelins, Ecole de l'image, Paris, 75000, digital art, art numérique, creative technologies, technologies créative, installation numérique, digital installations, physical installations, installations physique, immersive artworks, immersive experiences, œuvres d'art immersives, expériences immersives, engaged experiences, expériences engagées";
 const imageURL = `${siteURL}/images/og_image.jpg`;
+
+// Test-only fixture page for tests/e2e/dispose.e2e.ts; absent from production builds.
+const e2e = Boolean(process.env.NUXT_PUBLIC_E2E);
+const e2eRoute = "/__e2e/dispose";
 
 export default defineNuxtConfig({
   compatibilityDate: "2026-10-01",
@@ -49,5 +55,18 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: true,
+  },
+  hooks: {
+    "pages:extend"(pages) {
+      if (!e2e) return;
+      pages.push({
+        name: "e2e-dispose",
+        path: e2eRoute,
+        file: fileURLToPath(new URL("./tests/fixtures/e2e-dispose.vue", import.meta.url)),
+      });
+    },
+  },
+  nitro: {
+    prerender: { routes: e2e ? [e2eRoute] : [] },
   },
 });
