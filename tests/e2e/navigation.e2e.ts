@@ -45,3 +45,20 @@ test.describe('before the scripts run', () => {
     expect(await page.locator('#portfolio').evaluate((root) => getComputedStyle(root).opacity)).toBe('0')
   })
 })
+
+test('should keep the dark theme while the home page leaves for field', async ({ page }) => {
+  await page.goto('/')
+  await expect.poll(() => page.locator('#portfolio').evaluate((root) => getComputedStyle(root).opacity)).toBe('1')
+  await page.evaluate(() => {
+    const w = window as unknown as { __themeWhileHomeShown: string[] }
+    w.__themeWhileHomeShown = []
+    new MutationObserver(() => {
+      if (document.querySelector('.section__introduction')) w.__themeWhileHomeShown.push(document.body.className)
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] })
+  })
+  await page.locator('a[href="/field"]').first().dispatchEvent('click')
+  await expect(page).toHaveURL(/\/field$/)
+  await expect.poll(() => page.evaluate(() => document.body.className)).toContain('theme__light')
+  const themes = await page.evaluate(() => (window as unknown as { __themeWhileHomeShown: string[] }).__themeWhileHomeShown)
+  expect(themes.filter((theme) => theme.includes('theme__light'))).toEqual([])
+})
