@@ -15,6 +15,7 @@ export interface WheelStep {
 
 interface Killable {
   kill(): unknown;
+  progress?(): number;
 }
 
 export function wheelDelta(event: {
@@ -43,7 +44,7 @@ export function createWheelScroller(options: {
   animate: (step: WheelStep) => Killable;
 }) {
   let scroll = 0;
-  let current: Killable | null = null;
+  let running: Killable[] = [];
 
   return {
     get scroll() {
@@ -52,13 +53,15 @@ export function createWheelScroller(options: {
     wheel(delta: number) {
       const step = stepWheelScroll(scroll, delta, options.min());
       scroll = step.scroll;
-      current?.kill();
-      current = options.animate(step);
+      // Like the live site, a new event never kills the running animation: each element hands over to the new
+      // one when its own staggered tween starts. Killing it froze the last elements under a 120 Hz trackpad.
+      running = running.filter((animation) => (animation.progress?.() ?? 0) < 1);
+      running.push(options.animate(step));
       return step;
     },
     dispose() {
-      current?.kill();
-      current = null;
+      for (const animation of running) animation.kill();
+      running = [];
     },
   };
 }
@@ -74,19 +77,21 @@ export function useWheelScroll(options: {
     min: options.min,
     animate: (step) => {
       const targets = options.targets();
-      return gsap
-        .timeline()
-        .to(targets, {
-          y: options.y(step),
-          skewY: `${options.skew(step)}deg`,
-          duration: WHEEL_DURATION,
-          stagger: WHEEL_STAGGER,
-        })
-        .to(targets, {
+      const straighten = () =>
+        gsap.to(targets, {
           skewY: "0deg",
           duration: WHEEL_DURATION,
           stagger: WHEEL_STAGGER,
+          overwrite: "auto",
         });
+      return gsap.to(targets, {
+        y: options.y(step),
+        skewY: `${options.skew(step)}deg`,
+        duration: WHEEL_DURATION,
+        overwrite: "auto",
+        // Legacy onComplete: each element that lands straightens the whole set back.
+        stagger: { each: WHEEL_STAGGER, onComplete: straighten },
+      });
     },
   });
 
@@ -105,6 +110,7 @@ export function useWheelScroll(options: {
     window.removeEventListener("wheel", onWheel);
     window.removeEventListener("resize", onResize);
     scroller.dispose();
+    gsap.killTweensOf(options.targets());
   });
 
   return { listen };

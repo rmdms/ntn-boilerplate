@@ -69,7 +69,7 @@ describe("createWheelScroller", () => {
     expect(scroller.scroll).toBe(-90);
   });
 
-  it("should kill the running animation when a wheel event arrives mid-tween", () => {
+  it("should let the running animation continue when a wheel event arrives mid-tween, like the live site", () => {
     const animations: ReturnType<typeof fakeAnimation>[] = [];
     const scroller = createWheelScroller({
       min: () => -1000,
@@ -81,7 +81,7 @@ describe("createWheelScroller", () => {
     });
     scroller.wheel(1);
     scroller.wheel(1);
-    expect(animations.map((a) => a.killed)).toEqual([true, false]);
+    expect(animations.map((a) => a.killed)).toEqual([false, false]);
   });
 
   it("should retarget the new animation to the accumulated target", () => {
@@ -98,14 +98,40 @@ describe("createWheelScroller", () => {
     expect(steps[1]).toEqual({ scroll: -90, delta: 1 });
   });
 
-  it("should kill the running animation when disposed", () => {
-    const animation = fakeAnimation();
+  it("should kill an animation that has not started yet when disposed", () => {
+    // Like a GSAP tween before its first render: isActive() is false until it is initialised.
+    const pending = () => {
+      const animation = { killed: false, kill: () => (animation.killed = true), isActive: () => false, progress: () => 0 };
+      return animation;
+    };
+    const animations: ReturnType<typeof pending>[] = [];
     const scroller = createWheelScroller({
       min: () => -1000,
-      animate: () => animation,
+      animate: () => {
+        const animation = pending();
+        animations.push(animation);
+        return animation;
+      },
     });
     scroller.wheel(1);
+    scroller.wheel(1);
     scroller.dispose();
-    expect(animation.killed).toBe(true);
+    expect(animations.map((a) => a.killed)).toEqual([true, true]);
+  });
+
+  it("should kill every animation still running when disposed", () => {
+    const animations: ReturnType<typeof fakeAnimation>[] = [];
+    const scroller = createWheelScroller({
+      min: () => -1000,
+      animate: () => {
+        const animation = fakeAnimation();
+        animations.push(animation);
+        return animation;
+      },
+    });
+    scroller.wheel(1);
+    scroller.wheel(1);
+    scroller.dispose();
+    expect(animations.map((a) => a.killed)).toEqual([true, true]);
   });
 });

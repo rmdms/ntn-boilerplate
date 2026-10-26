@@ -54,6 +54,32 @@ test.describe("travel page with a fine pointer", () => {
     test.skip(testInfo.project.name !== "desktop", "wheel behavior only");
   });
 
+  test("should keep every photo moving together when a trackpad sends a wheel event every frame", async ({
+    page,
+  }) => {
+    await openMountedTravelPage(page);
+    // A 120 Hz trackpad: one small wheel event every 8 ms. The live site's spread stays near 23 px.
+    const spread = await page.evaluate(async () => {
+      const images = [...document.querySelectorAll(".section_pictures img")];
+      const y = (image: Element) => new DOMMatrix(getComputedStyle(image).transform).f;
+      let widest = 0;
+      let count = 0;
+      await new Promise<void>((done) => {
+        const id = setInterval(() => {
+          window.dispatchEvent(new WheelEvent("wheel", { deltaY: 12 }));
+          const ys = images.map(y);
+          widest = Math.max(widest, Math.max(...ys) - Math.min(...ys));
+          if (++count >= 90) {
+            clearInterval(id);
+            done();
+          }
+        }, 8);
+      });
+      return widest;
+    });
+    expect(spread).toBeLessThan(30);
+  });
+
   test("should move the images instead of the page when the wheel turns", async ({
     page,
   }) => {
