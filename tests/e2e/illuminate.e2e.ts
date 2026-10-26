@@ -135,10 +135,8 @@ test.describe("illuminate", () => {
     await clickTimes(page, 12, 0);
     expect(await probe(page, (e) => e.lights())).toBe(120);
     await clickTimes(page, 1, 0);
-    expect(await probe(page, (e) => [e.lights(), e.resetting()])).toEqual([
-      120,
-      true,
-    ]);
+    // The reset clears lights after 500 ms, which slow frames may already have elapsed: assert no light was added, then the reset.
+    expect(await probe(page, (e) => e.lights() <= 120 && (e.resetting() || e.lights() === 0))).toBe(true);
     await page.waitForFunction(
       () => window.__illuminateProbe!.experience!.lights() === 0,
     );
@@ -166,8 +164,7 @@ test.describe("illuminate", () => {
     await press(page, "touch", [x, y]);
     const before = await probe(page, (e) => e.drop().x);
     await press(page, "touch", [x, y], [x + 30, y]);
-    expect(await probe(page, (e) => [e.lights(), e.drop().x > before])).toEqual(
-      [10, true],
-    );
+    expect(await probe(page, (e) => e.lights())).toBe(10);
+    expect(await probe(page, (e) => e.drop().x)).toBeGreaterThan(before);
   });
 });
