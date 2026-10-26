@@ -8,6 +8,7 @@ import {
   type StageHost,
   type ViewportSize,
 } from "./experience";
+import { createQualityGovernor } from "./quality-governor";
 
 /** The layout provides its persistent canvas under this key. */
 export const EXPERIENCE_CANVAS: InjectionKey<Ref<HTMLCanvasElement | null>> =
@@ -66,6 +67,14 @@ function captureRendererState(
   };
 }
 
+// iPadOS reports itself as a Mac, so a touch-capable Mac is treated as iOS.
+function isIOS() {
+  return (
+    /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
+  );
+}
+
 function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   const renderer = new WebGLRenderer({
     canvas,
@@ -74,17 +83,25 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
     powerPreference: "high-performance",
   });
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isIOS() ? 2 : 1.5));
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
   const clock = createClock();
+  const governor = createQualityGovernor();
   const contextListeners = new Set<ContextListener>();
   let frame: ((dt: number) => void) | null = null;
 
   const syncLoop = () => {
     clock.reset();
     renderer.setAnimationLoop(
-      frame && !document.hidden ? (time) => frame?.(clock.tick(time)) : null,
+      frame && !document.hidden
+        ? (time) => {
+            const dt = clock.tick(time);
+            frame?.(dt);
+            const level = governor.sample(dt * 1000);
+            if (level !== null) stage.current?.setQuality(level);
+          }
+        : null,
     );
   };
 
@@ -105,6 +122,8 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
     snapshot: () => captureRendererState(renderer, size),
     setFrame(next) {
       frame = next;
+      const run = stage.current;
+      if (next && run) governor.start(run.qualityRange, run.quality);
       syncLoop();
     },
   };
