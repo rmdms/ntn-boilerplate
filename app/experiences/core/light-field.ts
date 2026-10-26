@@ -227,7 +227,11 @@ export interface GlowSpritesOptions {
 
 export interface GlowSprites {
   readonly mesh: InstancedMesh;
-  /** Shows a camera-facing additive sprite for lights [0, count). */
+  /**
+   * Shows a camera-facing additive sprite for lights [0, count). Positions are rewritten on every call;
+   * a sprite's colour is copied only when it first appears (or reappears after the count dropped below it),
+   * so the colours of visible lights are expected to stay fixed.
+   */
   update(lights: LightBuffer, count: number): void;
   dispose(): void;
 }
@@ -261,6 +265,12 @@ export function createGlowSprites({
   mesh.count = 0;
   const matrices = mesh.instanceMatrix.array as Float32Array;
   const colors = mesh.instanceColor.array as Float32Array;
+  // Only the translation changes per frame, so every slot keeps its identity rotation and scale.
+  for (let i = 0; i < capacity; i++) {
+    const m = i * 16;
+    matrices[m] = matrices[m + 5] = matrices[m + 10] = matrices[m + 15] = 1;
+  }
+  let coloredCount = 0;
 
   return {
     mesh,
@@ -268,20 +278,20 @@ export function createGlowSprites({
       const n = Math.min(count, capacity);
       for (let i = 0; i < n; i++) {
         const m = i * 16;
-        matrices.fill(0, m, m + 16);
-        matrices[m] = matrices[m + 5] = matrices[m + 10] = matrices[m + 15] = 1;
         matrices[m + 12] = lights.position[i * 3]!;
         matrices[m + 13] = lights.position[i * 3 + 1]!;
         matrices[m + 14] = lights.position[i * 3 + 2]!;
-        colors[i * 3] = lights.color[i * 3]!;
-        colors[i * 3 + 1] = lights.color[i * 3 + 1]!;
-        colors[i * 3 + 2] = lights.color[i * 3 + 2]!;
       }
-      mesh.count = n;
-      if (n > 0) {
-        mesh.instanceMatrix.needsUpdate = true;
+      if (n > coloredCount) {
+        colors.set(
+          lights.color.subarray(coloredCount * 3, n * 3),
+          coloredCount * 3,
+        );
         mesh.instanceColor!.needsUpdate = true;
       }
+      coloredCount = n;
+      mesh.count = n;
+      if (n > 0) mesh.instanceMatrix.needsUpdate = true;
     },
     dispose() {
       geometry.dispose();

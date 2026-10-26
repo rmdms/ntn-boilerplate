@@ -48,6 +48,19 @@ describe("createFixedStepper", () => {
 });
 
 describe("createIlluminatePhysics", () => {
+  it("should report all asleep when no light exists", () => {
+    const physics = createIlluminatePhysics();
+    expect(physics.allSleeping()).toBe(true);
+    physics.dispose();
+  });
+
+  it("should report not all asleep when a light was just added", () => {
+    const physics = createIlluminatePhysics();
+    physics.addLight({ x: 0, y: 25, z: 0 }, { x: 0, y: 0, z: 0 });
+    expect(physics.allSleeping()).toBe(false);
+    physics.dispose();
+  });
+
   it("should use the legacy effective contact values between a light and the ground", () => {
     const physics = createIlluminatePhysics();
     const contact = physics.contact("light", "ground");

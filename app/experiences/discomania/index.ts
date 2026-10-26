@@ -28,6 +28,7 @@ import { loadEssentials } from "../core/asset-loader";
 import { createExperienceAudio, type AudioTrack } from "../core/audio";
 import { disposeObject } from "../core/dispose";
 import type { Experience, ViewportSize } from "../core/experience";
+import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
 import { createKickDetector } from "../core/kick-detector";
 import {
   createLightBuffer,
@@ -243,8 +244,7 @@ export function createDiscomania(): DiscomaniaExperience {
   const choreography = createChoreography();
   const kicks = createKickDetector();
   const lights = createLightBuffer(LIGHT_CAPACITY);
-  const spectrum = (index: number) =>
-    legacyBin(audio.frequencyData, index, FFT_SIZE);
+  const spectrum = (index: number) => legacyBin(audio.frequencyData, index);
 
   let built: Built | null = null;
   let renderer: WebGLRenderer | null = null;
@@ -321,12 +321,13 @@ export function createDiscomania(): DiscomaniaExperience {
     },
 
     setQuality(next) {
-      const level =
-        DISCOMANIA_LEVELS[
-          Math.max(0, Math.min(DISCOMANIA_LEVELS.length - 1, next))
-        ]!;
+      const level = levelAt(DISCOMANIA_LEVELS, next);
       if (built) built.field.maxShaded = level.shaded;
-      renderer?.setPixelRatio(basePixelRatio * level.pixelRatio);
+      if (renderer)
+        applyPixelRatio(
+          renderer,
+          resolvePixelRatio(basePixelRatio, level.pixelRatio),
+        );
     },
 
     resize(size: ViewportSize) {

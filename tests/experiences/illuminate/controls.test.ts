@@ -5,6 +5,7 @@ import {
   LIGHTS_PER_DROP,
   createTapTracker,
   dropPoint,
+  needsFrame,
   shouldReset,
 } from "../../../app/experiences/illuminate/controls";
 
@@ -102,5 +103,25 @@ describe("dropPoint", () => {
     const a = dropPoint(pointer(100, 100, true), size);
     const b = dropPoint(pointer(130, 100, true), size);
     expect(b.x).toBeGreaterThan(a.x);
+  });
+});
+
+describe("needsFrame", () => {
+  it("should draw when the scene is dirty even if nothing stepped", () => {
+    expect(needsFrame({ dirty: true, steps: 0, wasAsleep: true })).toBe(true);
+  });
+
+  it("should draw when awake bodies ran a fixed step", () => {
+    expect(needsFrame({ dirty: false, steps: 2, wasAsleep: false })).toBe(true);
+  });
+
+  it("should skip when no fixed step ran and nothing changed", () => {
+    expect(needsFrame({ dirty: false, steps: 0, wasAsleep: false })).toBe(
+      false,
+    );
+  });
+
+  it("should skip when steps ran but every body was asleep", () => {
+    expect(needsFrame({ dirty: false, steps: 3, wasAsleep: true })).toBe(false);
   });
 });

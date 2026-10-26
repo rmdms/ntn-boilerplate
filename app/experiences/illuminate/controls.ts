@@ -32,6 +32,15 @@ export function shouldReset(count: number, cap: number) {
   return count + LIGHTS_PER_DROP > cap;
 }
 
+/** A frame only needs drawing after a state change, or when awake bodies ran at least one fixed step. */
+export function needsFrame(state: {
+  dirty: boolean;
+  steps: number;
+  wasAsleep: boolean;
+}) {
+  return state.dirty || (state.steps > 0 && !state.wasAsleep);
+}
+
 export interface Size {
   width: number;
   height: number;

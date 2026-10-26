@@ -23,6 +23,7 @@ import type {
 } from "../core/experience";
 import {
   createGlowSprites,
+  createLightBuffer,
   createLightField,
   type GlowSprites,
   type LightBuffer,
@@ -37,8 +38,10 @@ import {
   createTapTracker,
   dropPoint,
   legacyRandom,
+  needsFrame,
   shouldReset,
 } from "./controls";
+import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
 import { createIlluminatePhysics, type IlluminatePhysics } from "./physics";
 
 export const FONT_URL = "/json/Morganite_SemiBold.json";
@@ -145,6 +148,16 @@ function buildScene(fontData: FontData): Built {
   bulbs.instanceMatrix.setUsage(DynamicDrawUsage);
   bulbs.frustumCulled = false;
   bulbs.count = 0;
+  // Only the translation changes per frame, so every slot keeps its identity rotation and scale.
+  const bulbMatrices = bulbs.instanceMatrix.array as Float32Array;
+  for (let i = 0; i < MAX_LIGHTS; i++) {
+    const m = i * 16;
+    bulbMatrices[m] =
+      bulbMatrices[m + 5] =
+      bulbMatrices[m + 10] =
+      bulbMatrices[m + 15] =
+        1;
+  }
   scene.add(bulbs);
 
   const glow = createGlowSprites({ capacity: MAX_LIGHTS, ...GLOW });
@@ -163,14 +176,11 @@ function buildScene(fontData: FontData): Built {
   };
 }
 
-function createLights(): LightBuffer {
+// Positions alias the physics buffer (same capacity and xyz layout), so no per-frame copy is needed.
+function createLights(positions: Float32Array): LightBuffer {
   const color = new Color(LIGHT_COLOR).multiplyScalar(LIGHT_INTENSITY);
-  const lights: LightBuffer = {
-    count: 0,
-    position: new Float32Array(MAX_LIGHTS * 3),
-    color: new Float32Array(MAX_LIGHTS * 3),
-    radius: new Float32Array(MAX_LIGHTS).fill(LIGHT_RADIUS),
-  };
+  const lights = { ...createLightBuffer(MAX_LIGHTS), position: positions };
+  lights.radius.fill(LIGHT_RADIUS);
   for (let i = 0; i < MAX_LIGHTS; i++) color.toArray(lights.color, i * 3);
   return lights;
 }
@@ -186,6 +196,8 @@ export function createIlluminate(
   let size = { width: 1, height: 1 };
   let level = ILLUMINATE_LEVELS[ILLUMINATE_LEVELS.length >> 1]!;
   let drop = { x: 0, y: 25 };
+  // Set by anything that changes the picture besides running physics; cleared once a frame is drawn.
+  let dirty = true;
   let resetting = false;
   let resetTime = 0;
   let restored = false;
@@ -205,12 +217,14 @@ export function createIlluminate(
       size.height,
     );
     camera.updateProjectionMatrix();
+    dirty = true;
   };
 
   const reset = () => {
     if (!physics || resetting) return;
     hooks.onResetStart?.(physics.count > 0);
     physics.flipGravity();
+    dirty = true;
     resetting = true;
     resetTime = 0;
     restored = false;
@@ -223,6 +237,7 @@ export function createIlluminate(
       reset();
       return;
     }
+    dirty = true;
     for (let i = 0; i < LIGHTS_PER_DROP; i++) {
       physics.addLight(
         {
@@ -259,7 +274,7 @@ export function createIlluminate(
       size = { width: ctx.size.width, height: ctx.size.height };
       physics = createIlluminatePhysics({ capacity: MAX_LIGHTS });
       physics.setText(assets.textBox);
-      lights = createLights();
+      lights = createLights(physics.positions);
       applyCamera();
       experience.setQuality(ctx.quality);
 
@@ -289,19 +304,20 @@ export function createIlluminate(
         if (resetTime >= RESET_CLEAR_S) {
           physics.clear();
           resetting = false;
+          dirty = true;
         }
       }
-      physics.step(dt);
+      const wasAsleep = physics.allSleeping();
+      const steps = physics.step(dt);
+      if (!needsFrame({ dirty, steps, wasAsleep })) return;
+      dirty = false;
 
       const count = physics.count;
       lights.count = count;
-      lights.position.set(physics.positions.subarray(0, count * 3));
 
       const matrices = built.bulbs.instanceMatrix.array as Float32Array;
       for (let i = 0; i < count; i++) {
         const m = i * 16;
-        matrices.fill(0, m, m + 16);
-        matrices[m] = matrices[m + 5] = matrices[m + 10] = matrices[m + 15] = 1;
         matrices[m + 12] = lights.position[i * 3]!;
         matrices[m + 13] = lights.position[i * 3 + 1]!;
         matrices[m + 14] = lights.position[i * 3 + 2]!;
@@ -320,12 +336,14 @@ export function createIlluminate(
     },
 
     setQuality(next) {
-      level =
-        ILLUMINATE_LEVELS[
-          Math.max(0, Math.min(ILLUMINATE_LEVELS.length - 1, next))
-        ]!;
+      level = levelAt(ILLUMINATE_LEVELS, next);
       if (built) built.field.maxShaded = level.shaded;
-      renderer?.setPixelRatio(basePixelRatio * level.pixelRatio);
+      if (renderer)
+        applyPixelRatio(
+          renderer,
+          resolvePixelRatio(basePixelRatio, level.pixelRatio),
+        );
+      dirty = true;
     },
 
     resize(next: ViewportSize) {

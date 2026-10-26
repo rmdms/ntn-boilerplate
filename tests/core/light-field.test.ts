@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { Matrix4, MeshPhongMaterial } from "three";
 import {
+  createGlowSprites,
   createLightBuffer,
   createLightField,
   packLights,
@@ -108,5 +109,32 @@ describe("createLightField", () => {
     field.update(bufferWith(200), new Matrix4());
     expect(material.customProgramCacheKey()).toBe(key);
     field.dispose();
+  });
+});
+
+describe("createGlowSprites", () => {
+  const options = { capacity: 4, size: 18, intensity: 0.6 };
+
+  it("should write only the translation of each shown sprite on top of an identity matrix", () => {
+    const glow = createGlowSprites(options);
+    glow.update(bufferWith(3), 2);
+    const m = glow.mesh.instanceMatrix.array;
+    expect([m[0], m[5], m[10], m[15]]).toEqual([1, 1, 1, 1]);
+    expect([m[16 + 12], m[16 + 13], m[16 + 14]]).toEqual([1, 1.5, -1]);
+    expect(glow.mesh.count).toBe(2);
+    glow.dispose();
+  });
+
+  it("should copy a sprite colour only when it first appears", () => {
+    const glow = createGlowSprites(options);
+    const lights = bufferWith(3);
+    glow.update(lights, 2);
+    lights.color.fill(9);
+    glow.update(lights, 2);
+    const colors = glow.mesh.instanceColor!.array;
+    expect(colors[3]).toBeCloseTo(0.1);
+    glow.update(lights, 3);
+    expect(colors[6]).toBe(9);
+    glow.dispose();
   });
 });

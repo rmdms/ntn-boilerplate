@@ -82,6 +82,8 @@ export interface IlluminatePhysics {
   /** Runs the fixed steps owed for dt seconds; returns how many ran. */
   step(dt: number): number;
   isSleeping(index: number): boolean;
+  /** True when no light is awake (vacuously true when there are none): a step then moves nothing. */
+  allSleeping(): boolean;
   flipGravity(): void;
   clear(): void;
   contact(a: SurfaceKind, b: SurfaceKind): ContactMaterial;
@@ -200,6 +202,9 @@ export function createIlluminatePhysics({
     },
     isSleeping(index) {
       return lights[index]?.sleepState === Body.SLEEPING;
+    },
+    allSleeping() {
+      return lights.every((body) => body.sleepState === Body.SLEEPING);
     },
     flipGravity() {
       world.gravity.set(0, RESET_GRAVITY, 0);
