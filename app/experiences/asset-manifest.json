@@ -1,0 +1,609 @@
+{
+  "experiences": {
+    "illuminate": {
+      "essential": [
+        {
+          "url": "/json/Morganite_SemiBold.json",
+          "bytes": 134798
+        }
+      ],
+      "deferred": [],
+      "streamed": []
+    },
+    "field": {
+      "essential": [
+        {
+          "url": "/images/texture-grass-1024.webp",
+          "bytes": 180350
+        }
+      ],
+      "deferred": [],
+      "streamed": []
+    },
+    "attract": {
+      "essential": [
+        {
+          "url": "/images/mmi.webp",
+          "bytes": 43930
+        }
+      ],
+      "deferred": [],
+      "streamed": []
+    },
+    "discomania": {
+      "essential": [],
+      "deferred": [],
+      "streamed": [
+        {
+          "url": "/audios/EverythingBlack_UnlikePluto.mp3",
+          "bytes": 6959920,
+          "segments": [
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-000.m4a",
+              "bytes": 130030
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-001.m4a",
+              "bytes": 129277
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-002.m4a",
+              "bytes": 129297
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-003.m4a",
+              "bytes": 130117
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-004.m4a",
+              "bytes": 129275
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-005.m4a",
+              "bytes": 129866
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-006.m4a",
+              "bytes": 128705
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-007.m4a",
+              "bytes": 130129
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-008.m4a",
+              "bytes": 129764
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-009.m4a",
+              "bytes": 129094
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-010.m4a",
+              "bytes": 129063
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-011.m4a",
+              "bytes": 130022
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-012.m4a",
+              "bytes": 129310
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-013.m4a",
+              "bytes": 129270
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-014.m4a",
+              "bytes": 129351
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-015.m4a",
+              "bytes": 130016
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-016.m4a",
+              "bytes": 129319
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-017.m4a",
+              "bytes": 129350
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-018.m4a",
+              "bytes": 130039
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-019.m4a",
+              "bytes": 129274
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-020.m4a",
+              "bytes": 129945
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-021.m4a",
+              "bytes": 129151
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-022.m4a",
+              "bytes": 130096
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-023.m4a",
+              "bytes": 128773
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-024.m4a",
+              "bytes": 129430
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-025.m4a",
+              "bytes": 129171
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-026.m4a",
+              "bytes": 130626
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-027.m4a",
+              "bytes": 128855
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-028.m4a",
+              "bytes": 129214
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-029.m4a",
+              "bytes": 129311
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-030.m4a",
+              "bytes": 130023
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-031.m4a",
+              "bytes": 129805
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-032.m4a",
+              "bytes": 128809
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-033.m4a",
+              "bytes": 130153
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-034.m4a",
+              "bytes": 129264
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-035.m4a",
+              "bytes": 129336
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-036.m4a",
+              "bytes": 129728
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-037.m4a",
+              "bytes": 130123
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-038.m4a",
+              "bytes": 128871
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-039.m4a",
+              "bytes": 129174
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-040.m4a",
+              "bytes": 129494
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-041.m4a",
+              "bytes": 130347
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-042.m4a",
+              "bytes": 128876
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-043.m4a",
+              "bytes": 129296
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-044.m4a",
+              "bytes": 129266
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-045.m4a",
+              "bytes": 130095
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-046.m4a",
+              "bytes": 129283
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-047.m4a",
+              "bytes": 129348
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-048.m4a",
+              "bytes": 130045
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-049.m4a",
+              "bytes": 129412
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-050.m4a",
+              "bytes": 129218
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-051.m4a",
+              "bytes": 129868
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-052.m4a",
+              "bytes": 129428
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-053.m4a",
+              "bytes": 129469
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-054.m4a",
+              "bytes": 129618
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-055.m4a",
+              "bytes": 128996
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-056.m4a",
+              "bytes": 130428
+            },
+            {
+              "url": "/audios/EverythingBlack_UnlikePluto/segment-057.m4a",
+              "bytes": 33879
+            }
+          ]
+        }
+      ]
+    },
+    "flower": {
+      "essential": [],
+      "deferred": [],
+      "streamed": [
+        {
+          "url": "/audios/AllNight_By_BigBoi.mp3",
+          "bytes": 7518927,
+          "segments": [
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-000.m4a",
+              "bytes": 129964
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-001.m4a",
+              "bytes": 129083
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-002.m4a",
+              "bytes": 130547
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-003.m4a",
+              "bytes": 128910
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-004.m4a",
+              "bytes": 129599
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-005.m4a",
+              "bytes": 129640
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-006.m4a",
+              "bytes": 130078
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-007.m4a",
+              "bytes": 129269
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-008.m4a",
+              "bytes": 129812
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-009.m4a",
+              "bytes": 129233
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-010.m4a",
+              "bytes": 129866
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-011.m4a",
+              "bytes": 128730
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-012.m4a",
+              "bytes": 130524
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-013.m4a",
+              "bytes": 129071
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-014.m4a",
+              "bytes": 129459
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-015.m4a",
+              "bytes": 129488
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-016.m4a",
+              "bytes": 129675
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-017.m4a",
+              "bytes": 129488
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-018.m4a",
+              "bytes": 129577
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-019.m4a",
+              "bytes": 129231
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-020.m4a",
+              "bytes": 129957
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-021.m4a",
+              "bytes": 129187
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-022.m4a",
+              "bytes": 130283
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-023.m4a",
+              "bytes": 129117
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-024.m4a",
+              "bytes": 130247
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-025.m4a",
+              "bytes": 129037
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-026.m4a",
+              "bytes": 129785
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-027.m4a",
+              "bytes": 128969
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-028.m4a",
+              "bytes": 130100
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-029.m4a",
+              "bytes": 129575
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-030.m4a",
+              "bytes": 129370
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-031.m4a",
+              "bytes": 129871
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-032.m4a",
+              "bytes": 129315
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-033.m4a",
+              "bytes": 129106
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-034.m4a",
+              "bytes": 130534
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-035.m4a",
+              "bytes": 129215
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-036.m4a",
+              "bytes": 129881
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-037.m4a",
+              "bytes": 129024
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-038.m4a",
+              "bytes": 129970
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-039.m4a",
+              "bytes": 129183
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-040.m4a",
+              "bytes": 129922
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-041.m4a",
+              "bytes": 128853
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-042.m4a",
+              "bytes": 130427
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-043.m4a",
+              "bytes": 128700
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-044.m4a",
+              "bytes": 129946
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-045.m4a",
+              "bytes": 129134
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-046.m4a",
+              "bytes": 130457
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-047.m4a",
+              "bytes": 129356
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-048.m4a",
+              "bytes": 129854
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-049.m4a",
+              "bytes": 129158
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-050.m4a",
+              "bytes": 129719
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-051.m4a",
+              "bytes": 128982
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-052.m4a",
+              "bytes": 129980
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-053.m4a",
+              "bytes": 129415
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-054.m4a",
+              "bytes": 129941
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-055.m4a",
+              "bytes": 129229
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-056.m4a",
+              "bytes": 129485
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-057.m4a",
+              "bytes": 129291
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-058.m4a",
+              "bytes": 130495
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-059.m4a",
+              "bytes": 128604
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-060.m4a",
+              "bytes": 129865
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-061.m4a",
+              "bytes": 129223
+            },
+            {
+              "url": "/audios/AllNight_By_BigBoi/segment-062.m4a",
+              "bytes": 68804
+            }
+          ]
+        }
+      ]
+    },
+    "photography": {
+      "essential": [
+        {
+          "url": "/images/sweden_slide_01.jpg",
+          "bytes": 33201
+        },
+        {
+          "url": "/images/sweden_slide_02.jpg",
+          "bytes": 33256
+        },
+        {
+          "url": "/images/sweden_slide_03.jpg",
+          "bytes": 37769
+        }
+      ],
+      "deferred": [
+        {
+          "url": "/images/north_thailand_slide_01.jpg",
+          "bytes": 50528
+        },
+        {
+          "url": "/images/north_thailand_slide_02.jpg",
+          "bytes": 43606
+        },
+        {
+          "url": "/images/north_thailand_slide_03.jpg",
+          "bytes": 44960
+        },
+        {
+          "url": "/images/croatia_slide_01.jpg",
+          "bytes": 45589
+        },
+        {
+          "url": "/images/croatia_slide_02.jpg",
+          "bytes": 48357
+        },
+        {
+          "url": "/images/croatia_slide_03.jpg",
+          "bytes": 37616
+        },
+        {
+          "url": "/images/netherland_slide_01.jpg",
+          "bytes": 64844
+        },
+        {
+          "url": "/images/netherland_slide_02.jpg",
+          "bytes": 60671
+        },
+        {
+          "url": "/images/netherland_slide_03.jpg",
+          "bytes": 45267
+        },
+        {
+          "url": "/images/south_thailand_slide_01.jpg",
+          "bytes": 59091
+        },
+        {
+          "url": "/images/south_thailand_slide_02.jpg",
+          "bytes": 42414
+        },
+        {
+          "url": "/images/south_thailand_slide_03.jpg",
+          "bytes": 40800
+        }
+      ],
+      "streamed": []
+    }
+  }
+}

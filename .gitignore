@@ -93,3 +93,10 @@ sw.*
 
 # Local Netlify folder
 .netlify
+# Nuxt 4
+.output
+.data
+.nuxt
+/test-results
+/playwright-report
+/.parity
