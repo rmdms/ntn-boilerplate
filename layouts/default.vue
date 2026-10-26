@@ -81,6 +81,8 @@ export default {
 	 position: fixed;
 	 top: 0;
 	 left: 0;
+	 width: 100%;
+	 height: 100%;
 	 z-index: 0;
 }
  section {
@@ -150,6 +152,9 @@ export default {
 }
  body.is__desktop {
 	 overflow: hidden;
+}
+ body.is__mobile {
+	 overflow: initial;
 }
  #portfolio {
 	 position: relative;
