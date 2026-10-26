@@ -99,3 +99,4 @@ sw.*
 .nuxt
 /test-results
 /playwright-report
+/.parity

@@ -80,7 +80,8 @@ function isIOS() {
 function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   const renderer = new WebGLRenderer({
     canvas,
-    antialias: false,
+    // The legacy site rendered every scene with MSAA; on tile-based mobile GPUs it costs little next to pixel ratio.
+    antialias: true,
     alpha: true,
     powerPreference: "high-performance",
   });
