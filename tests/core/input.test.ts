@@ -218,3 +218,32 @@ describe("fast taps", () => {
     expect(harness.reads.at(-1)?.down).toBe(false);
   });
 });
+
+describe("multi-touch", () => {
+  it("should keep the first finger pressed when a second finger lifts", () => {
+    const harness = createHarness();
+    harness.dispatch("pointerdown", { pointerType: "touch", pointerId: 1 });
+    harness.runFrame();
+    harness.dispatch("pointerdown", { pointerType: "touch", pointerId: 2 });
+    harness.dispatch("pointerup", { pointerType: "touch", pointerId: 2 });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.down).toBe(true);
+  });
+
+  it("should follow only the first finger when a second finger moves", () => {
+    const harness = createHarness();
+    harness.dispatch("pointerdown", { pointerType: "touch", pointerId: 1, clientX: 100 });
+    harness.dispatch("pointermove", { pointerType: "touch", pointerId: 2, clientX: 200 });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.x).toBe(0);
+  });
+
+  it("should release when the first finger lifts", () => {
+    const harness = createHarness();
+    harness.dispatch("pointerdown", { pointerType: "touch", pointerId: 1 });
+    harness.runFrame();
+    harness.dispatch("pointerup", { pointerType: "touch", pointerId: 1 });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.down).toBe(false);
+  });
+});

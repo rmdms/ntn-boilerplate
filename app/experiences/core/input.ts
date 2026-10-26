@@ -74,7 +74,16 @@ export function createInput(options: InputOptions): Input {
     state.active = true;
   };
 
+  // Touch and pen follow the finger that pressed first; other fingers neither move nor release it.
+  let primaryId: number | null = null;
+  const ignores = (event: InputEvent) =>
+    toKind(event.pointerType) !== "mouse" &&
+    primaryId !== null &&
+    event.pointerId !== primaryId;
+
   const release = (event: InputEvent) => {
+    if (ignores(event)) return;
+    primaryId = null;
     state.kind = toKind(event.pointerType);
     // A press and release within one frame would otherwise reach the experience as a release only.
     if (state.down && scheduled) flush();
@@ -85,6 +94,8 @@ export function createInput(options: InputOptions): Input {
 
   const handlers: Record<string, (event: InputEvent) => void> = {
     pointerdown(event) {
+      if (ignores(event)) return;
+      if (toKind(event.pointerType) !== "mouse") primaryId = event.pointerId;
       locate(event);
       state.down = true;
       if (mode === "fullscreen")
@@ -94,6 +105,7 @@ export function createInput(options: InputOptions): Input {
       changed();
     },
     pointermove(event) {
+      if (ignores(event)) return;
       locate(event);
       changed();
     },
