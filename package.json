@@ -9,13 +9,17 @@
   },
   "scripts": {
     "dev": "nuxt dev",
+    "prebuild": "bun run build-manifest",
     "build": "nuxt build",
+    "pregenerate": "bun run build-manifest",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "test": "bun test tests/",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "encode-assets": "bun run scripts/encode-assets.ts",
+    "build-manifest": "bun run scripts/build-asset-manifest.ts"
   },
   "dependencies": {
     "@nuxt/image": "^2.2.0",

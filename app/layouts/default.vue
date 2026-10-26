@@ -10,6 +10,7 @@ provide(EXPERIENCE_CANVAS, canvas)
   <div id="portfolio">
     <canvas ref="canvas" class="experience-canvas is-hidden" aria-hidden="true" />
     <CustomPointer />
+    <SiteLoader />
     <slot />
   </div>
 </template>
