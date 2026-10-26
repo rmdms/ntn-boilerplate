@@ -11,10 +11,10 @@ export function levelAt<T>(levels: readonly T[], level: number): T {
 export function resolvePixelRatio(
   base: number,
   factor: PixelRatioFactor,
-  deviceRatio = window.devicePixelRatio,
+  deviceRatio?: number,
 ): number {
   return factor === "native"
-    ? Math.max(base, Math.min(deviceRatio, 2))
+    ? Math.max(base, Math.min(deviceRatio ?? window.devicePixelRatio, 2))
     : base * factor;
 }
 
