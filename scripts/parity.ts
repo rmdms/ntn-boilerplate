@@ -43,7 +43,8 @@ const scenarios: Record<string, (page: Page) => Promise<void>> = {
   discomania: async (page) => {
     await page.waitForTimeout(5000);
     await page.locator(".button__play").first().click({ timeout: 15000 }).catch(() => {});
-    await page.waitForTimeout(14000);
+    // The track's first strobe burst runs from ~35 s to ~50 s; earlier both sites are calm and white.
+    await page.waitForTimeout(40000);
   },
 };
 

@@ -3,7 +3,10 @@ import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 
 const publicDir = join(import.meta.dir, "../public");
-const audioBitrate = "160k";
+// The mp3 is served as is (the live site's file); only the decoded-segment fallback is re-encoded.
+// AudioToolbox keeps the 18-22 kHz band discomania's kick detector listens to; ffmpeg's aac encoder cuts it.
+const audioCodec = "aac_at";
+const audioBitrate = "256k";
 const segmentSeconds = 4;
 const attractMaxEdge = 2048;
 const grassSize = 1024;
@@ -24,25 +27,12 @@ function encodeTrack(track: string) {
     "-map_metadata",
     "-1",
     "-c:a",
-    "aac",
+    audioCodec,
     "-b:a",
     audioBitrate,
     "-ac",
     "2",
   ];
-  run([
-    "ffmpeg",
-    "-y",
-    "-loglevel",
-    "error",
-    "-i",
-    source,
-    ...aac,
-    "-movflags",
-    "+faststart",
-    join(publicDir, "audios", `${track}.m4a`),
-  ]);
-
   const segmentDir = join(publicDir, "audios", track);
   rmSync(segmentDir, { recursive: true, force: true });
   mkdirSync(segmentDir, { recursive: true });

@@ -42,7 +42,6 @@ import {
   MAX_LIT_CAGES,
   PLANET_RADIUS,
   createChoreography,
-  legacyBin,
   createLegacyKick,
   type Choreography,
 } from "./choreography";
@@ -244,7 +243,7 @@ export function createDiscomania(): DiscomaniaExperience {
   const choreography = createChoreography();
   const kicks = createLegacyKick();
   const lights = createLightBuffer(LIGHT_CAPACITY);
-  const spectrum = (index: number) => legacyBin(audio.frequencyData, index);
+  const spectrum = (index: number) => audio.frequencyData[index] ?? 0;
 
   let built: Built | null = null;
   let renderer: WebGLRenderer | null = null;
