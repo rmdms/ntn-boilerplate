@@ -24,7 +24,7 @@ execution: code
 
 ## Product Contract
 
-Product Contract preservation: changed: R20 added — `discomania` flashes follow real kicks; approved by the owner in the plan scoping synthesis on 2026-10-26.
+Product Contract preservation: changed: R20 added on 2026-10-26, then redefined the same day after the owner's parity review — `discomania` keeps the live site's kick timing.
 
 ### Summary
 
@@ -53,7 +53,7 @@ Nuxt 2 has been end-of-life since June 2024, and the Vercel build needed Node an
 - **Like-for-like design and content.** (session-settled: user-approved — chosen over updating the bio texts or allowing a redesign: those are separate projects.) Governs R2, R3.
 - **Single cut-over with a shared experience contract.** (session-settled: user-approved — chosen over a page-by-page strangler migration on the live domain and over porting each experience without a shared contract: one codebase at the end, and teardown, quality and progress are solved once for all experiences.) Governs R6, R19.
 - **Touch mapping is decided per experience.** (session-settled: user-directed — chosen over a single rule such as finger-drag everywhere or gyroscope.) Governs R15, R16.
-- **`discomania` reacts to real kicks.** (session-settled: user-approved — chosen over keeping today's detector, which listens to 18–22 kHz and fires on nearly every frame: the flashes should follow the music.) Governs R20.
+- **`discomania` keeps the live site's kick detector.** (session-settled: user-directed — chosen over reacting to real low-frequency kicks: a real-kick detector changed the opening 30 s, which are white and calm on the live site, and identical rendering wins.) Governs R20.
 
 ### Requirements
 
@@ -74,7 +74,7 @@ Nuxt 2 has been end-of-life since June 2024, and the Vercel build needed Node an
 - R7. Each experience (`attract`, `discomania`, `field`, `flower`, `illuminate`, `photography`, home page) is audited, and its rendering and performance logic is rebuilt with the most efficient current technique that reproduces its perceived result.
 - R8. When the new technique allows more (more lights, particles, instances or density) at equal or better frame rate, the experience may use it, as long as its intent and look stay recognizably the same.
 - R9. `illuminate` supports a much larger number of lights than today's cap of 60, without the per-light cost of the current forward-rendered point lights.
-- R20. `discomania`'s colour flashes and cage blinks fire on actual kicks of the track.
+- R20. `discomania`'s colour flashes and cage blinks fire exactly when the live site's detector fires (loudest of the 18–22 kHz bins against a decaying threshold): calm and white for the first ~30 s, then strobing.
 
 **Adaptive quality**
 

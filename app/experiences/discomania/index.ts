@@ -29,7 +29,6 @@ import { createExperienceAudio, type AudioTrack } from "../core/audio";
 import { disposeObject } from "../core/dispose";
 import type { Experience, ViewportSize } from "../core/experience";
 import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
-import { createKickDetector } from "../core/kick-detector";
 import {
   createLightBuffer,
   createLightField,
@@ -44,6 +43,7 @@ import {
   PLANET_RADIUS,
   createChoreography,
   legacyBin,
+  createLegacyKick,
   type Choreography,
 } from "./choreography";
 
@@ -242,7 +242,7 @@ function writeLights(lights: LightBuffer, choreography: Choreography) {
 export function createDiscomania(): DiscomaniaExperience {
   const audio = createExperienceAudio("discomania", { fftSize: FFT_SIZE });
   const choreography = createChoreography();
-  const kicks = createKickDetector();
+  const kicks = createLegacyKick();
   const lights = createLightBuffer(LIGHT_CAPACITY);
   const spectrum = (index: number) => legacyBin(audio.frequencyData, index);
 
@@ -295,7 +295,7 @@ export function createDiscomania(): DiscomaniaExperience {
 
       orbitTime += dt * ORBIT_SPEED;
       const kick = playing
-        ? kicks.update(audio.frequencyData, audio.binHz, dt)
+        ? kicks.update(spectrum, dt)
         : false;
       choreography.step({
         time: playing ? audio.time : 0,

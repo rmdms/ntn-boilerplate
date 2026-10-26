@@ -6,6 +6,7 @@ import {
   CAGE_HIDDEN,
   PALETTE,
   createChoreography,
+  createLegacyKick,
   legacyBin,
   pickColour,
   type Choreography,
@@ -227,3 +228,48 @@ describe("bulb orbit", () => {
     ]).toEqual([BULB_COUNT, CAGE_COUNT]);
   });
 });
+
+describe("legacy kick detector", () => {
+  const level = (byte: number) => (index: number) => (index >= 210 && index <= 255 ? byte : 0);
+
+  it("should fire on high-frequency content above the legacy threshold", () => {
+    const kick = createLegacyKick();
+    expect(kick.update(level(40), FRAME)).toBe(true);
+  });
+
+  it("should not fire when the 210-255 band is silent", () => {
+    const kick = createLegacyKick();
+    expect(kick.update(silence, FRAME)).toBe(false);
+  });
+
+  it("should not fire below the absolute threshold of 5", () => {
+    const kick = createLegacyKick();
+    expect(kick.update(level(4), FRAME)).toBe(false);
+  });
+
+  it("should fire again every frame while the band holds its level", () => {
+    const kick = createLegacyKick();
+    kick.update(level(40), FRAME);
+    expect(kick.update(level(40), FRAME)).toBe(true);
+  });
+
+  it("should stay silent after a louder kick until the threshold has decayed", () => {
+    const kick = createLegacyKick();
+    kick.update(level(200), FRAME);
+    expect(kick.update(level(100), FRAME)).toBe(false);
+  });
+
+  it("should fire again once the threshold decayed by 50 per 60 Hz frame", () => {
+    const kick = createLegacyKick();
+    kick.update(level(200), FRAME);
+    kick.update(silence, FRAME);
+    kick.update(silence, FRAME);
+    expect(kick.update(level(100), FRAME)).toBe(true);
+  });
+
+  it("should ignore content outside the 210-255 band", () => {
+    const kick = createLegacyKick();
+    expect(kick.update((index) => (index < 210 ? 255 : 0), FRAME)).toBe(false);
+  });
+});
+

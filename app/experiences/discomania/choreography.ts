@@ -244,3 +244,32 @@ export function createChoreography(random: Random = Math.random): Choreography {
     reset,
   };
 }
+
+const LEGACY_KICK = { from: 210, to: 255, threshold: 5, decayPerFrame: 50 };
+
+export interface LegacyKick {
+  /** `level(i)` returns the legacy 512-point byte for bin i; true on the frames the legacy detector fired. */
+  update(level: (index: number) => number, dt: number): boolean;
+}
+
+/**
+ * The live site's detector, kept for parity: the loudest bin of 210-255 (about 18-22 kHz) fires whenever it
+ * reaches a threshold that jumps to each kick and decays by 50 per 60 Hz frame. On this track it stays silent
+ * for the first ~30 s, then strobes.
+ */
+export function createLegacyKick(): LegacyKick {
+  let current = 0;
+  return {
+    update(level, dt) {
+      let magnitude = 0;
+      for (let i = LEGACY_KICK.from; i <= LEGACY_KICK.to; i++)
+        magnitude = Math.max(magnitude, level(i));
+      if (magnitude >= current && magnitude >= LEGACY_KICK.threshold) {
+        current = magnitude;
+        return true;
+      }
+      current -= LEGACY_KICK.decayPerFrame * dt * 60;
+      return false;
+    },
+  };
+}
