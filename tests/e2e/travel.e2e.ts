@@ -91,3 +91,18 @@ test("should serve travel images as AVIF or WebP from /_ipx/", async ({
     body.subarray(8, 12).toString("latin1") === "WEBP";
   expect(isAvif || isWebp).toBe(true);
 });
+
+test("should only fetch the photos near the screen when the page opens", async ({
+  page,
+}, testInfo) => {
+  // On the touch project the whole gallery sits within Chrome's own lazy-load distance, so every photo loads.
+  test.skip(testInfo.project.name !== "desktop", "wheel-driven gallery only");
+  const fetched = new Set<string>();
+  page.on("request", (request) => {
+    if (/\/_ipx\/.*croatia_\d+\.jpg/.test(request.url())) fetched.add(request.url());
+  });
+  await openMountedTravelPage(page);
+  await page.waitForTimeout(1000);
+  const total = await page.locator(".section_pictures img").count();
+  expect(fetched.size).toBeLessThan(total);
+});

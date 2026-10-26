@@ -97,6 +97,14 @@ onBeforeUnmount(() => ctx?.revert())
 }
 #main .section_pictures .img :deep(img) {
   width: 100%;
+  height: auto;
+}
+/* Every gallery photo is 710x947 or 950x713: reserving its box before it loads lets loading="lazy" skip off-screen photos. */
+#main .section_pictures .img.img-vertical :deep(img) {
+  aspect-ratio: 710 / 947;
+}
+#main .section_pictures .img.img-horizontal :deep(img) {
+  aspect-ratio: 950 / 713;
 }
 @media not all and (hover: hover) and (pointer: fine), (max-width: 600px) {
   /* Same specificity as the desktop margin rule above, which it must override (legacy: .is__mobile #main .img). */
