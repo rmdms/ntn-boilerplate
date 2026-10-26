@@ -12,6 +12,7 @@ interface InputEvent {
   readonly pointerId: number;
   readonly deltaY: number;
   readonly target: EventTarget | null;
+  readonly relatedTarget?: EventTarget | null;
 }
 
 export interface InputOptions {
@@ -96,6 +97,11 @@ export function createInput(options: InputOptions): Input {
     },
     pointerup: release,
     pointercancel: release,
+    pointerout(event) {
+      if (event.relatedTarget || toKind(event.pointerType) !== "mouse") return;
+      state.active = false;
+      changed();
+    },
     wheel(event) {
       state.wheel += event.deltaY;
       changed();

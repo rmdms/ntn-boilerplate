@@ -83,7 +83,9 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
     powerPreference: "high-performance",
   });
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isIOS() ? 2 : 1.5));
+  // Experiences scale the renderer's ratio for quality, so size() always reports this capped device ratio instead.
+  const basePixelRatio = Math.min(window.devicePixelRatio, isIOS() ? 2 : 1.5);
+  renderer.setPixelRatio(basePixelRatio);
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
   const clock = createClock();
@@ -108,7 +110,7 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   const size = (): ViewportSize => ({
     width: canvas.clientWidth,
     height: canvas.clientHeight,
-    pixelRatio: renderer.getPixelRatio(),
+    pixelRatio: basePixelRatio,
   });
 
   const stageHost: StageHost = {

@@ -11,6 +11,7 @@ interface FakeEventInit {
   pointerType?: string;
   pointerId?: number;
   deltaY?: number;
+  relatedTarget?: EventTarget | null;
 }
 
 function createHarness(mode: InputMode = "fullscreen") {
@@ -43,6 +44,7 @@ function createHarness(mode: InputMode = "fullscreen") {
         pointerType: "mouse",
         pointerId: 1,
         deltaY: 0,
+        relatedTarget: null,
         ...init,
       });
       target.dispatchEvent(event);
@@ -177,3 +179,24 @@ describe("createInput", () => {
     });
   });
 });
+
+describe("mouse leaving the page", () => {
+  it("should report no pointer when the mouse leaves the window", () => {
+    const harness = createHarness();
+    harness.dispatch("pointermove");
+    harness.runFrame();
+    harness.dispatch("pointerout", { relatedTarget: null });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.active).toBe(false);
+  });
+
+  it("should keep the pointer active when the mouse moves onto another element", () => {
+    const harness = createHarness();
+    harness.dispatch("pointermove");
+    harness.runFrame();
+    harness.dispatch("pointerout", { relatedTarget: new EventTarget() });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.active).toBe(true);
+  });
+});
+
