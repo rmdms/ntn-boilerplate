@@ -23,6 +23,8 @@ export interface RendererHost extends StageHost {
   setVisible(visible: boolean): void;
   /** Notified with true on webglcontextlost and false on webglcontextrestored. */
   onContextChange(listener: ContextListener): () => void;
+  /** Stops the loop and releases the renderer; the next getRendererHost call creates a fresh host. */
+  dispose(): void;
 }
 
 // Viewport and scissor go back to the full canvas at its current size, since the canvas may have resized meanwhile.
@@ -99,7 +101,10 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
       frame && !document.hidden
         ? (time) => {
             const dt = clock.tick(time);
+            const renders = renderer.info.render.frame;
             frame?.(dt);
+            // Idle ticks of render-on-change scenes run at vsync and would read as headroom.
+            if (renderer.info.render.frame === renders) return;
             const level = governor.sample(dt * 1000);
             if (level !== null) stage.current?.setQuality(level);
           }
@@ -140,11 +145,12 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
     },
   });
 
-  new ResizeObserver(() => {
+  const resizeObserver = new ResizeObserver(() => {
     const next = size();
     renderer.setSize(next.width, next.height, false);
     stage.resize(next);
-  }).observe(canvas);
+  });
+  resizeObserver.observe(canvas);
 
   document.addEventListener("visibilitychange", syncLoop);
 
@@ -167,13 +173,25 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
       contextListeners.add(listener);
       return () => contextListeners.delete(listener);
     },
+    dispose() {
+      stage.current?.dispose();
+      renderer.setAnimationLoop(null);
+      resizeObserver.disconnect();
+      document.removeEventListener("visibilitychange", syncLoop);
+      contextListeners.clear();
+      renderer.dispose();
+    },
   };
 }
 
 let instance: RendererHost | null = null;
 
-/** Returns the app-wide renderer host, creating it on the layout's canvas the first time. */
+/** Returns the app-wide renderer host, recreating it when the layout remounts with a new canvas (e.g. after the error page). */
 export function getRendererHost(canvas: HTMLCanvasElement): RendererHost {
+  if (instance && instance.canvas !== canvas) {
+    instance.dispose();
+    instance = null;
+  }
   instance ??= createRendererHost(canvas);
   return instance;
 }
