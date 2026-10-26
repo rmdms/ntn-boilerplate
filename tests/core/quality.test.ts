@@ -1,6 +1,20 @@
 import { describe, expect, it } from "bun:test";
-import { applyPixelRatio, levelAt, resolvePixelRatio } from "../../app/experiences/core/quality";
+import { applyPixelRatio, basePixelRatio, levelAt, resolvePixelRatio } from "../../app/experiences/core/quality";
 import { frameEase } from "../../app/experiences/core/clock";
+
+describe("basePixelRatio", () => {
+  it("should cap a 3x phone screen at 2 without knowing the device", () => {
+    expect(basePixelRatio(3)).toBe(2);
+  });
+
+  it("should keep a Retina Mac at its native 2, like the live site's field and photography", () => {
+    expect(basePixelRatio(2)).toBe(2);
+  });
+
+  it("should keep a ratio below the cap unchanged", () => {
+    expect(basePixelRatio(1.25)).toBe(1.25);
+  });
+});
 
 describe("levelAt", () => {
   it("should return the entry at the requested level", () => {

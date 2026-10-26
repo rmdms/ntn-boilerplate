@@ -8,6 +8,7 @@ import {
   type StageHost,
   type ViewportSize,
 } from "./experience";
+import { basePixelRatio } from "./quality";
 import { createQualityGovernor } from "./quality-governor";
 
 /** The layout provides its persistent canvas under this key. */
@@ -69,14 +70,6 @@ function captureRendererState(
   };
 }
 
-// iPadOS reports itself as a Mac, so a touch-capable Mac is treated as iOS.
-function isIOS() {
-  return (
-    /iPhone|iPad|iPod/.test(navigator.userAgent) ||
-    (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
-  );
-}
-
 function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   const renderer = new WebGLRenderer({
     canvas,
@@ -87,8 +80,8 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   });
   renderer.setClearColor(0x000000, 0);
   // Experiences scale the renderer's ratio for quality, so size() always reports this capped device ratio instead.
-  const basePixelRatio = Math.min(window.devicePixelRatio, isIOS() ? 2 : 1.5);
-  renderer.setPixelRatio(basePixelRatio);
+  const pixelRatio = basePixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(pixelRatio);
   renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
   const clock = createClock();
@@ -116,7 +109,7 @@ function createRendererHost(canvas: HTMLCanvasElement): RendererHost {
   const size = (): ViewportSize => ({
     width: canvas.clientWidth,
     height: canvas.clientHeight,
-    pixelRatio: basePixelRatio,
+    pixelRatio,
   });
 
   const stageHost: StageHost = {

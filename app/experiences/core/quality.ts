@@ -3,6 +3,13 @@ import { MathUtils } from "three";
 /** Pixel ratio as a factor of the host's capped base ratio, or the device ratio up to 2 ("native"). */
 export type PixelRatioFactor = number | "native";
 
+const BASE_PIXEL_RATIO_CAP = 2;
+
+/** The renderer's starting ratio: the screen's own, capped for every device alike; the governor lowers it from there. */
+export function basePixelRatio(devicePixelRatio: number) {
+  return Math.min(devicePixelRatio, BASE_PIXEL_RATIO_CAP);
+}
+
 /** The entry for a quality level, clamped to the table's floor and top. */
 export function levelAt<T>(levels: readonly T[], level: number): T {
   return levels[MathUtils.clamp(level, 0, levels.length - 1)]!;
