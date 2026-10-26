@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests/e2e',
+  testMatch: '**/*.e2e.ts',
   timeout: 60_000,
   use: { baseURL: 'http://localhost:4173' },
   webServer: {

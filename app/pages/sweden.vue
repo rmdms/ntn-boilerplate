@@ -1,10 +1,18 @@
 <script setup lang="ts">
-useTheme('dark')
+const images = [
+  { src: '/images/sweden_01.jpg', orientation: 'horizontal' as const },
+  { src: '/images/sweden_02.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_03.jpg', orientation: 'horizontal' as const },
+  { src: '/images/sweden_04.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_05.jpg', orientation: 'horizontal' as const },
+  { src: '/images/sweden_06.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_07.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_08.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_09.jpg', orientation: 'vertical' as const },
+  { src: '/images/sweden_10.jpg', orientation: 'horizontal' as const }
+]
 </script>
 
 <template>
-  <main id="main">
-    <NuxtLink class="link__back" to="/">Rémy Dumas</NuxtLink>
-    <h1>sweden</h1>
-  </main>
+  <TravelGallery :images="images" />
 </template>
