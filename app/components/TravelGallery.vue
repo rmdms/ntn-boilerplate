@@ -98,7 +98,8 @@ onBeforeUnmount(() => ctx?.revert())
   width: 100%;
 }
 @media not all and (hover: hover) and (pointer: fine), (max-width: 600px) {
-  #main .img {
+  /* Same specificity as the desktop margin rule above, which it must override (legacy: .is__mobile #main .img). */
+  #main .section_pictures .img {
     float: inherit !important;
     margin: 50px auto;
     width: 100% !important;

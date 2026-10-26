@@ -18,7 +18,8 @@ export default defineNuxtConfig({
   modules: ["@nuxt/image"],
   css: ["~/assets/styles/main.css"],
   image: {
-    provider: "ipxStatic",
+    // ipxStatic only writes files at generate time; dev needs the on-the-fly ipx server.
+    provider: process.env.NODE_ENV === "development" ? "ipx" : "ipxStatic",
     format: ["avif", "webp"],
   },
   app: {
