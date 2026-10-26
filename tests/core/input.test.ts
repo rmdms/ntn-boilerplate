@@ -200,3 +200,21 @@ describe("mouse leaving the page", () => {
   });
 });
 
+
+describe("fast taps", () => {
+  it("should deliver the press when a tap starts and ends within one frame", () => {
+    const harness = createHarness();
+    harness.dispatch("pointerdown", { pointerType: "touch" });
+    harness.dispatch("pointerup", { pointerType: "touch" });
+    harness.runFrame();
+    expect(harness.reads.some((state) => state.down)).toBe(true);
+  });
+
+  it("should end released when a tap starts and ends within one frame", () => {
+    const harness = createHarness();
+    harness.dispatch("pointerdown", { pointerType: "touch" });
+    harness.dispatch("pointerup", { pointerType: "touch" });
+    harness.runFrame();
+    expect(harness.reads.at(-1)?.down).toBe(false);
+  });
+});

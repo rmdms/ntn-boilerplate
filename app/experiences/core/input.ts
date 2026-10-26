@@ -76,6 +76,8 @@ export function createInput(options: InputOptions): Input {
 
   const release = (event: InputEvent) => {
     state.kind = toKind(event.pointerType);
+    // A press and release within one frame would otherwise reach the experience as a release only.
+    if (state.down && scheduled) flush();
     state.down = false;
     if (state.kind !== "mouse") state.active = false;
     changed();
