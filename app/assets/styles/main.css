@@ -1,0 +1,158 @@
+@font-face {
+  font-family: "Circular";
+  src: url("/fonts/circular_standart/circular_standart_book.woff")
+    format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Futura";
+  src: url("/fonts/futura/futura_light.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Morganite";
+  src: url("/fonts/morganite_semibold/morganite_semibold.woff") format("woff");
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "B";
+  src: url("/fonts/b.woff") format("woff");
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "C";
+  src: url("/fonts/C.woff") format("woff");
+  font-style: normal;
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Rama Gothic C";
+  src:
+    url("/fonts/rama_gothic/rama_gothic_c_heavy.woff") format("woff"),
+    url("/fonts/rama_gothic/rama_gothic_c_heavy.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: fallback;
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+}
+a,
+body,
+canvas,
+footer,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+html,
+img,
+li,
+nav,
+p,
+section,
+span,
+ul {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+html,
+body {
+  height: auto;
+  width: 100%;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  display: inline-block;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+li {
+  display: block;
+}
+section {
+  margin-bottom: 80px;
+}
+span {
+  display: inline-block;
+}
+img {
+  display: block;
+}
+
+body.theme__dark {
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+}
+body.theme__dark a {
+  color: #fff;
+}
+body.theme__light {
+  background: rgba(255, 255, 255, 1);
+  color: #141414;
+}
+body.theme__light a {
+  color: #141414;
+}
+
+#portfolio {
+  position: relative;
+  width: 100%;
+  font-family: "Circular", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 2;
+  word-spacing: 1px;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+#portfolio .tt__subtitle {
+  font-family: "Futura", sans-serif;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+#portfolio .fs__sm {
+  font-size: 14px;
+  font-weight: 200;
+}
+
+/* Fine hovering pointers get the original desktop behavior: custom cursor and wheel-driven pages. */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+  body {
+    overflow: hidden;
+  }
+  #portfolio {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.4s ease;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
