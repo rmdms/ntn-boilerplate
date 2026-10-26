@@ -69,3 +69,17 @@ test("should ignore a second step while the first transition runs", async ({
   await expect(slide(page, 1)).toBeVisible();
   await expect(slide(page, 2)).toBeHidden();
 });
+
+test("should show the page and its fallback when WebGL is unavailable", async ({ page }) => {
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+      if (type === "webgl2" || type === "webgl") return null;
+      return (getContext as (...args: unknown[]) => unknown).call(this, type, ...rest);
+    } as typeof HTMLCanvasElement.prototype.getContext;
+  });
+  await page.goto("/photography");
+  const main = page.locator("main.section__works");
+  await expect(main).toHaveCSS("opacity", "1", { timeout: 5_000 });
+  await expect(page.locator(".experience-fallback")).toBeVisible();
+});

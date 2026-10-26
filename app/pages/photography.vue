@@ -59,7 +59,10 @@ function animateStep({ from, to, direction, timing }: Step) {
 function onState(state: ExperienceState) {
   if (revealed || (state !== 'running' && state !== 'disposed')) return
   revealed = true
-  ctx?.add(() => gsap.to(main.value, { opacity: 1, duration: 0.75 }))
+  const reveal = () => gsap.to(main.value, { opacity: 1, duration: 0.75 })
+  // The host can report before this page's onMounted has created the context.
+  if (ctx) ctx.add(reveal)
+  else reveal()
 }
 
 const factory = () => createPhotography({ onStep: animateStep })

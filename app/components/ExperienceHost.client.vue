@@ -44,6 +44,8 @@ onMounted(() => {
   } catch (error) {
     console.error('[experience] WebGL unavailable', error)
     failed.value = true
+    // No run will ever report a state, so pages waiting on one to reveal themselves must still hear an end.
+    emit('state', 'disposed')
     return
   }
   stopContextWatch = host.onContextChange((lost) => {
