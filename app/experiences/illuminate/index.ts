@@ -4,6 +4,7 @@ import {
   DoubleSide,
   DynamicDrawUsage,
   InstancedMesh,
+  LinearSRGBColorSpace,
   Mesh,
   MeshBasicMaterial,
   MeshPhongMaterial,
@@ -56,12 +57,12 @@ const SURFACE = {
 const BULB_COLOR = 0xfff5e8;
 const LIGHT_COLOR = 0xaa886f;
 const LIGHT_RADIUS = 35;
-// Legacy PointLight intensity 0.5 (decay 1, non-physical) retuned for the linear pipeline: matches one light's pool at its centre.
-const LIGHT_INTENSITY = 0.79;
+// Legacy PointLight intensity 0.5 (decay 1); legacy lights folded π into the irradiance, the light-field loop does not.
+const LIGHT_INTENSITY = 0.5 * Math.PI;
 const GLOW = { size: 18, intensity: 0.6 };
 const FOV = 50;
-// The legacy canvas sat inside #main's 5vh / 7.5vw margin, shifting the scene right and down.
-const VIEW_SHIFT = { x: 0.075, y: 0.05 };
+// The legacy canvas was fixed at left 0 with top 5%, shifting the scene down only.
+const VIEW_SHIFT = { x: 0, y: 0.05 };
 const RESET_RESTORE_S = 0.25;
 const RESET_CLEAR_S = 0.5;
 
@@ -113,6 +114,10 @@ function probeSlot() {
   );
 }
 
+function linear(hex: number) {
+  return new Color().setHex(hex, LinearSRGBColorSpace);
+}
+
 function buildScene(fontData: FontData): Built {
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV, 1, 1, 1000);
@@ -120,7 +125,13 @@ function buildScene(fontData: FontData): Built {
   scene.add(camera);
 
   const field = createLightField({ capacity: MAX_SHADED });
-  const surface = new MeshPhongMaterial({ side: DoubleSide, ...SURFACE });
+  const surface = new MeshPhongMaterial({
+    side: DoubleSide,
+    color: linear(SURFACE.color),
+    emissive: SURFACE.emissive,
+    specular: linear(SURFACE.specular),
+    shininess: SURFACE.shininess,
+  });
   field.patch(surface);
 
   const ground = new Mesh(new BoxGeometry(1000, 1000, 0.1), surface);
@@ -141,8 +152,8 @@ function buildScene(fontData: FontData): Built {
   scene.add(text);
 
   const bulbs = new InstancedMesh(
-    new SphereGeometry(1, 12, 8),
-    new MeshBasicMaterial({ color: BULB_COLOR }),
+    new SphereGeometry(1, 36, 16),
+    new MeshBasicMaterial({ color: linear(BULB_COLOR) }),
     MAX_LIGHTS,
   );
   bulbs.instanceMatrix.setUsage(DynamicDrawUsage);
@@ -178,7 +189,7 @@ function buildScene(fontData: FontData): Built {
 
 // Positions alias the physics buffer (same capacity and xyz layout), so no per-frame copy is needed.
 function createLights(positions: Float32Array): LightBuffer {
-  const color = new Color(LIGHT_COLOR).multiplyScalar(LIGHT_INTENSITY);
+  const color = linear(LIGHT_COLOR).multiplyScalar(LIGHT_INTENSITY);
   const lights = { ...createLightBuffer(MAX_LIGHTS), position: positions };
   lights.radius.fill(LIGHT_RADIUS);
   for (let i = 0; i < MAX_LIGHTS; i++) color.toArray(lights.color, i * 3);
@@ -194,7 +205,7 @@ export function createIlluminate(
   let lights: LightBuffer | null = null;
   let basePixelRatio = 1;
   let size = { width: 1, height: 1 };
-  let level = ILLUMINATE_LEVELS[ILLUMINATE_LEVELS.length >> 1]!;
+  let level = ILLUMINATE_LEVELS[ILLUMINATE_LEVELS.length - 1]!;
   let drop = { x: 0, y: 25 };
   // Set by anything that changes the picture besides running physics; cleared once a frame is drawn.
   let dirty = true;
@@ -253,7 +264,7 @@ export function createIlluminate(
   const experience: IlluminateExperience = {
     quality: {
       levels: ILLUMINATE_LEVELS.length,
-      initial: ILLUMINATE_LEVELS.length >> 1,
+      initial: ILLUMINATE_LEVELS.length - 1,
     },
 
     async load(ctx) {
@@ -262,6 +273,8 @@ export function createIlluminate(
         progress: ctx.progress,
         steps: 1,
       });
+      // Legacy output was linear and colours were raw hex values; matching both keeps its exact shading.
+      ctx.renderer.outputColorSpace = LinearSRGBColorSpace;
       built = buildScene(assets.json<FontData>(FONT_URL));
       await assets.step(ctx.renderer.compileAsync(built.scene, built.camera));
       return built;

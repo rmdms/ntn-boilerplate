@@ -5,6 +5,6 @@ import { ILLUMINATE_LEVELS } from "../../../app/experiences/illuminate/controls"
 describe("createIlluminate", () => {
   it("should start at the middle quality level", () => {
     const { quality } = createIlluminate();
-    expect(quality).toEqual({ levels: ILLUMINATE_LEVELS.length, initial: 2 });
+    expect(quality).toEqual({ levels: ILLUMINATE_LEVELS.length, initial: ILLUMINATE_LEVELS.length - 1 });
   });
 });
