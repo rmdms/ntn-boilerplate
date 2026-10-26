@@ -141,12 +141,22 @@ function createHarness() {
     { length: 58 },
     (_, i) => `/audios/track/segment-${String(i).padStart(3, "0")}.m4a`,
   );
-  const track = () =>
-    system.track({ url: "/audios/track.m4a", segments, fftSize: 2048 });
+  const track = (options: { fftSize?: number } = { fftSize: 2048 }) =>
+    system.track({ url: "/audios/track.mp3", segments, ...options });
   return { contexts, elements, fetched, logs, session, segments, track };
 }
 
 describe("audio track", () => {
+  it("should size the spectrum for a 2048-point FFT when the experience names none", () => {
+    const { track } = createHarness();
+    expect(track({}).frequencyData.length).toBe(1024);
+  });
+
+  it("should clamp the FFT size to the analyser maximum of 32768", () => {
+    const { track } = createHarness();
+    expect(track({ fftSize: 65536 }).frequencyData.length).toBe(16384);
+  });
+
   it("should report loading until playback starts, then playing", async () => {
     const { elements, track } = createHarness();
     const audio = track();
