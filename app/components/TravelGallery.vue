@@ -33,7 +33,8 @@ const { listen } = useWheelScroll({
 
 onMounted(() => {
   ctx = gsap.context(() => {
-    gsap.from(main.value, { autoAlpha: 0, duration: 1.25 })
+    // Explicit end values: on client-side navigation the page transition still holds #main at opacity 0 here.
+    gsap.fromTo(main.value, { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.25 })
   })
   listen()
 })

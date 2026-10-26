@@ -111,6 +111,11 @@ body.theme__light a {
   color: #141414;
 }
 
+/* Transparent until the first page has mounted and its intro tweens have set their start states (see layouts/default.vue). */
+#portfolio.is-hydrating {
+  opacity: 0;
+}
+
 #portfolio {
   position: relative;
   width: 100%;

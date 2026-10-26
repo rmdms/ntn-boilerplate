@@ -4,10 +4,15 @@ import { EXPERIENCE_CANVAS } from '~/experiences/core/renderer-host'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 provide(EXPERIENCE_CANVAS, canvas)
+
+// The prerendered HTML would otherwise show every element in its final state before the page intros start.
+// Mounted hooks run child first, so the page has already set its intro start states when this one runs.
+const hydrating = ref(true)
+onMounted(() => (hydrating.value = false))
 </script>
 
 <template>
-  <div id="portfolio">
+  <div id="portfolio" :class="{ 'is-hydrating': hydrating }">
     <canvas ref="canvas" class="experience-canvas is-hidden" aria-hidden="true" />
     <CustomPointer />
     <SiteLoader />

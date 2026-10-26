@@ -135,6 +135,7 @@ onBeforeUnmount(() => ctx?.revert())
 #main #content p span {
   position: relative;
   display: inline-block;
+  opacity: 0;
 }
 #main #reset {
   position: fixed;
