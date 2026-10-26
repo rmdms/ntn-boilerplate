@@ -15,7 +15,7 @@ import {
   windFrequency,
 } from "../../../app/experiences/field/grass";
 
-// Literal copy of the legacy loop (legacy/assets/scripts/field/script.js:605-624), run on a plain array.
+// Literal copy of the legacy loop (Nuxt 2 field script, lines 605-624), run on a plain array.
 function legacyDeform(source: ArrayLike<number>) {
   const vertices = Float32Array.from(source);
   for (let i = 0; i <= vertices.length; i++) {

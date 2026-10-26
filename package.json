@@ -17,7 +17,7 @@
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "test": "bun test tests/",
-    "test:e2e": "playwright test",
+    "test:e2e": "NUXT_PUBLIC_E2E=1 bun run generate && playwright test",
     "encode-assets": "bun run scripts/encode-assets.ts",
     "build-manifest": "bun run scripts/build-asset-manifest.ts"
   },
