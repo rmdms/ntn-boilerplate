@@ -105,7 +105,7 @@ Nuxt 2 has been end-of-life since June 2024, and the Vercel build needed Node an
 - AE3. **Covers R14.** Given `flower` on a mobile connection, when the visitor taps play, then sound starts within a few seconds instead of after a 7.5 MB download, and the sphere reacts to the music.
 - AE4. **Covers R17.** Given an iPad (which reports itself as a Mac), when the visitor touches `attract`, then the touch interaction applies, not the desktop one.
 - AE5. **Covers R9.** Given `illuminate` on desktop, when the visitor keeps clicking past 60 lights, then lights keep appearing with no visible frame-rate collapse.
-- AE6. **Covers R20.** Given `discomania` playing a passage without kick drum, when no kick occurs, then the bulbs keep their colour instead of changing every frame.
+- AE6. **Covers R20.** Given `discomania` playing the first ~30 s of the track, when the 18–22 kHz band stays below the legacy threshold, then the bulbs stay white and no cage blinks, as on the live site.
 
 ### Success Criteria
 
