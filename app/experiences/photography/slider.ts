@@ -59,6 +59,20 @@ export function slideUrls(trip: Trip): string[] {
   );
 }
 
+// Legacy filled a trip's slots in texture load order, so which photo lands in which slot varies per visit.
+/** A random permutation of the slots 0..count-1: entry j is the slot of the trip's j-th photo. */
+export function shuffledSlots(
+  count: number,
+  random: () => number = Math.random,
+): number[] {
+  const slots = Array.from({ length: count }, (_, i) => i);
+  for (let i = count - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [slots[i], slots[j]] = [slots[j]!, slots[i]!];
+  }
+  return slots;
+}
+
 /** False when a plane centred at `x` lies strictly beyond `visibleHalfWidth`, so it can be skipped. */
 export function isPlaneOnScreen(
   x: number,

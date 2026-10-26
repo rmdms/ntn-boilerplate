@@ -30,6 +30,7 @@ import {
   isPlaneOnScreen,
   letterCount,
   PLANES_PER_TRIP,
+  shuffledSlots,
   slideUrls,
   SPACE_BETWEEN_PLANES,
   TRIPS,
@@ -110,6 +111,7 @@ export function createPhotography(
   });
 
   const planes: Plane[] = [];
+  const slots = TRIPS.map(() => shuffledSlots(PLANES_PER_TRIP));
   const deferredAbort = new AbortController();
   let slider: Slider | null = null;
   let renderer: WebGLRenderer | null = null;
@@ -123,7 +125,8 @@ export function createPhotography(
   let deferredStarted = false;
   let disposed = false;
 
-  const addPlane = (trip: number, index: number, bitmap: ImageBitmap) => {
+  const addPlane = (trip: number, photo: number, bitmap: ImageBitmap) => {
+    const index = slots[trip]![photo]!;
     const landscape = bitmap.width > bitmap.height;
     const texture = new Texture(bitmap);
     texture.needsUpdate = true;

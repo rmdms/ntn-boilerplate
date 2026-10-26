@@ -6,6 +6,7 @@ import {
   createTripLoads,
   isPlaneOnScreen,
   letterCount,
+  shuffledSlots,
   slideUrls,
   transitionTiming,
   TRIPS,
@@ -213,5 +214,19 @@ describe("isPlaneOnScreen", () => {
 
   it("should treat negative positions symmetrically", () => {
     expect(isPlaneOnScreen(-3.01, 0.5, 2.5)).toBe(false);
+  });
+});
+
+describe("shuffledSlots", () => {
+  it("should return every slot exactly once", () => {
+    expect([...shuffledSlots(3)].sort()).toEqual([0, 1, 2]);
+  });
+
+  it("should keep the identity order when the draw always picks the last slot", () => {
+    expect(shuffledSlots(3, () => 0.999)).toEqual([0, 1, 2]);
+  });
+
+  it("should move the first photo out of its slot when the draw picks the first slot", () => {
+    expect(shuffledSlots(3, () => 0)).toEqual([1, 2, 0]);
   });
 });
