@@ -230,7 +230,7 @@ describe("experience lifecycle", () => {
     stage.start(() => createStub("a", log));
     await flush();
     stage.resize({ width: 640, height: 320, pixelRatio: 1 });
-    stage.input({ x: 0.5, y: -0.5, down: true, kind: "touch" });
+    stage.input({ x: 0.5, y: -0.5, down: true, kind: "touch", active: true, wheel: 0 });
     expect(log.slice(-2)).toEqual(["a:resize:640x320", "a:input:0.5,-0.5"]);
   });
 

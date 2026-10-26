@@ -16,6 +16,10 @@ export interface PointerState {
   y: number;
   down: boolean;
   kind: PointerKind;
+  /** False once a touch or pen lifts or is cancelled: there is no pointer to follow. */
+  active: boolean;
+  /** Wheel deltaY summed since the previous read. */
+  wheel: number;
 }
 
 /** Quality levels run from 0 (the floor) to levels - 1. */
