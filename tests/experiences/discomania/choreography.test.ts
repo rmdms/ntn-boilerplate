@@ -201,10 +201,22 @@ describe("bulb orbit", () => {
     expect(radius).toBeCloseTo(12.5, 5);
   });
 
-  it("should read the legacy 512-point bin as the mean of the matching 2048-point bins", () => {
-    const spectrum = new Uint8Array(1024);
-    spectrum.set([10, 20, 30, 40], 4);
-    expect(legacyBin(spectrum, 1, 2048)).toBe(25);
+  it("should read a flat 2048-point spectrum 6 dB higher in the legacy 512-point bin, as four bins' power", () => {
+    const spectrum = new Uint8Array(1024).fill(100);
+    expect(legacyBin(spectrum, 5, 2048)).toBeCloseTo(
+      100 + ((10 * Math.log10(4)) / 70) * 255,
+      5,
+    );
+  });
+
+  it("should read a silent spectrum as a silent legacy bin", () => {
+    expect(legacyBin(new Uint8Array(1024), 5, 2048)).toBe(0);
+  });
+
+  it("should read a 512-point spectrum as is", () => {
+    const spectrum = new Uint8Array(256);
+    spectrum[3] = 42;
+    expect(legacyBin(spectrum, 3, 512)).toBe(42);
   });
 
   it("should create one orbit slot per bulb and one cage per legacy morph", () => {

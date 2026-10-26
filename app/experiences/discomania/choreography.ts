@@ -40,17 +40,62 @@ export function pickColour(random: Random = Math.random): number {
   return PALETTE[Math.max(0, index)]!;
 }
 
-/** Byte level of the legacy 512-point bin `index`, averaged from the finer bins of an `fftSize` analyser. */
+// AnalyserNode default byte scale: 255 maps the -100..-30 dB range.
+const DECIBEL_RANGE = 70;
+// Main lobe of the Blackman window, in legacy bins.
+const LOBE = 3;
+
+const kernels = new Map<number, Float64Array>();
+
+/** |W(f)|² of the legacy 512-point Blackman window at each fine-bin offset of the main lobe, summing to `span`. */
+function legacyKernel(span: number) {
+  let kernel = kernels.get(span);
+  if (kernel) return kernel;
+  const reach = LOBE * span;
+  kernel = new Float64Array(reach * 2 + 1);
+  let total = 0;
+  for (let o = -reach; o <= reach; o++) {
+    const f = o / span / LEGACY_FFT_SIZE;
+    let re = 0;
+    let im = 0;
+    for (let n = 0; n < LEGACY_FFT_SIZE; n++) {
+      const phase = (2 * Math.PI * n) / LEGACY_FFT_SIZE;
+      const w = 0.42 - 0.5 * Math.cos(phase) + 0.08 * Math.cos(2 * phase);
+      re += w * Math.cos(2 * Math.PI * f * n);
+      im += w * Math.sin(2 * Math.PI * f * n);
+    }
+    kernel[o + reach] = re * re + im * im;
+    total += kernel[o + reach]!;
+  }
+  for (let i = 0; i < kernel.length; i++)
+    kernel[i] = (kernel[i]! * span) / total;
+  kernels.set(span, kernel);
+  return kernel;
+}
+
+/**
+ * Byte level the legacy 512-point analyser gave for bin `index`, rebuilt from an `fftSize` analyser:
+ * the fine bins' powers summed through the legacy window's response (a plain mean of the bytes reads ~30 lower).
+ */
 export function legacyBin(
   spectrum: Uint8Array,
   index: number,
   fftSize: number = FFT_SIZE,
 ): number {
   const span = Math.max(1, Math.round(fftSize / LEGACY_FFT_SIZE));
-  const first = index * span;
-  let sum = 0;
-  for (let i = first; i < first + span; i++) sum += spectrum[i] ?? 0;
-  return sum / span;
+  if (span === 1) return spectrum[index] ?? 0;
+  const kernel = legacyKernel(span);
+  const reach = LOBE * span;
+  const centre = index * span;
+  let power = 0;
+  for (let o = -reach; o <= reach; o++) {
+    const byte = spectrum[Math.abs(centre + o)] ?? 0;
+    if (byte > 0)
+      power += kernel[o + reach]! * 10 ** ((byte * DECIBEL_RANGE) / 2550);
+  }
+  return power > 0
+    ? Math.min(255, (2550 / DECIBEL_RANGE) * Math.log10(power))
+    : 0;
 }
 
 // Legacy random_interval: the +1 widens the range past max, kept for identical placement.

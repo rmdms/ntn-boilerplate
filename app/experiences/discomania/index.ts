@@ -256,7 +256,7 @@ export function createDiscomania(): DiscomaniaExperience {
     audio,
     quality: {
       levels: DISCOMANIA_LEVELS.length,
-      initial: DISCOMANIA_LEVELS.length >> 1,
+      initial: DISCOMANIA_LEVELS.length - 1,
     },
 
     async load(ctx) {
