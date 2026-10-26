@@ -78,7 +78,12 @@ export function sampleBladePositions(
   count: number,
   random: () => number,
 ): Float32Array {
-  const sampler = new MeshSurfaceSampler(hill)
+  // setRandomGenerator exists in three r186 but is missing from @types/three 0.186.
+  const sampler = (
+    new MeshSurfaceSampler(hill) as MeshSurfaceSampler & {
+      setRandomGenerator(random: () => number): MeshSurfaceSampler;
+    }
+  )
     .setRandomGenerator(random)
     .build();
   const positions = new Float32Array(count * 3);
