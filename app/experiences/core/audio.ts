@@ -24,7 +24,7 @@ export interface AudioEnvironment {
 export interface AudioTrackOptions {
   url: string;
   segments: readonly string[];
-  /** At most 2048. */
+  /** At most `MAX_FFT_SIZE`. */
   fftSize?: number;
   smoothing?: number;
 }
@@ -53,6 +53,9 @@ export interface AudioTrack {
 export interface AudioSystem {
   track(options: AudioTrackOptions): AudioTrack;
 }
+
+/** Largest analyser FFT size (KTD7). */
+export const MAX_FFT_SIZE = 2048;
 
 const ZERO_FALLBACK_SECONDS = 1;
 const SEGMENTS_AHEAD = 2;
@@ -83,7 +86,7 @@ export function createAudioSystem(env: AudioEnvironment): AudioSystem {
 
   return {
     track(options) {
-      const fftSize = Math.min(options.fftSize ?? 2048, 2048);
+      const fftSize = Math.min(options.fftSize ?? MAX_FFT_SIZE, MAX_FFT_SIZE);
       const smoothing = options.smoothing ?? 0.8;
       const entry = getElement(options.url);
       const { element } = entry;
@@ -104,6 +107,7 @@ export function createAudioSystem(env: AudioEnvironment): AudioSystem {
       let disposed = false;
       let generation = 0;
       let zeroSeconds = 0;
+      let heardSound = false;
       let lastElementTime = 0;
 
       let segmentSources: {
@@ -144,6 +148,7 @@ export function createAudioSystem(env: AudioEnvironment): AudioSystem {
         analyser = null;
         mode = "element";
         zeroSeconds = 0;
+        heardSound = false;
         lastElementTime = 0;
         data.fill(0);
         if (!disposed) texture.needsUpdate = true;
@@ -270,10 +275,13 @@ export function createAudioSystem(env: AudioEnvironment): AudioSystem {
           if (mode !== "element" || status !== "playing") return;
           const advanced = element.currentTime > lastElementTime;
           lastElementTime = element.currentTime;
-          if (!advanced || element.paused) return;
-          zeroSeconds = data.every((value) => value === 0)
-            ? zeroSeconds + dt
-            : 0;
+          if (!advanced || element.paused || heardSound) return;
+          if (data.every((value) => value === 0)) {
+            zeroSeconds += dt;
+          } else {
+            heardSound = true;
+            zeroSeconds = 0;
+          }
           if (zeroSeconds >= ZERO_FALLBACK_SECONDS) switchToSegments();
         },
         dispose() {

@@ -14,6 +14,7 @@ import { loadEssentials } from "../core/asset-loader";
 import { createExperienceAudio, type AudioTrack } from "../core/audio";
 import { disposeObject } from "../core/dispose";
 import type { Experience, ViewportSize } from "../core/experience";
+import { applyPixelRatio, levelAt, resolvePixelRatio } from "../core/quality";
 import {
   binIndices,
   createColourCadence,
@@ -62,13 +63,15 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
   let sphere: Mesh<SphereGeometry, MeshStandardMaterial> | null = null;
   let controls: OrbitControls | null = null;
   let basePixelRatio = 1;
-  let level = 0;
   let rotationY = 0;
 
   const applyQuality = (next: number) => {
-    level = Math.min(Math.max(0, next), FLOWER_QUALITY.length - 1);
-    const quality = FLOWER_QUALITY[level]!;
-    renderer?.setPixelRatio(basePixelRatio * quality.pixelRatio);
+    const quality = levelAt(FLOWER_QUALITY, next);
+    if (renderer)
+      applyPixelRatio(
+        renderer,
+        resolvePixelRatio(basePixelRatio, quality.pixelRatio),
+      );
     if (
       sphere &&
       sphere.geometry.parameters.widthSegments !== quality.segments
@@ -152,9 +155,7 @@ export function createFlower(options: FlowerOptions): FlowerExperience {
       renderer.render(scene, camera);
     },
 
-    setQuality(next) {
-      applyQuality(next);
-    },
+    setQuality: applyQuality,
 
     resize(size: ViewportSize) {
       if (!camera || size.height === 0) return;

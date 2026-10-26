@@ -4,6 +4,7 @@ import type { PointerState } from "../../../app/experiences/core/experience";
 import {
   createSlider,
   createTripLoads,
+  isPlaneOnScreen,
   letterCount,
   slideUrls,
   transitionTiming,
@@ -198,5 +199,19 @@ describe("photography transition timing", () => {
 
   it("should never bring colour back before the planes and scrollbar settle", () => {
     expect(transitionTiming(1, 1).appearAt).toBeCloseTo(1.25, 6);
+  });
+});
+
+describe("isPlaneOnScreen", () => {
+  it("should keep a plane whose edge touches the visible bound", () => {
+    expect(isPlaneOnScreen(3, 0.5, 2.5)).toBe(true);
+  });
+
+  it("should skip a plane strictly beyond the visible bound", () => {
+    expect(isPlaneOnScreen(3.01, 0.5, 2.5)).toBe(false);
+  });
+
+  it("should treat negative positions symmetrically", () => {
+    expect(isPlaneOnScreen(-3.01, 0.5, 2.5)).toBe(false);
   });
 });

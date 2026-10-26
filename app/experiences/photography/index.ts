@@ -17,10 +17,17 @@ import type {
   PointerState,
   ViewportSize,
 } from "../core/experience";
+import {
+  applyPixelRatio,
+  levelAt,
+  resolvePixelRatio,
+  type PixelRatioFactor,
+} from "../core/quality";
 import { fragmentShader, vertexShader } from "./shaders/slide";
 import {
   createSlider,
   createTripLoads,
+  isPlaneOnScreen,
   letterCount,
   PLANES_PER_TRIP,
   slideUrls,
@@ -41,7 +48,13 @@ const PARALLAX_RENDER_TIME = PARALLAX_DURATION + 0.1;
 const IMAGE_OPTIONS: ImageBitmapOptions = { imageOrientation: "flipY" };
 
 /** Factor on the host pixel ratio, or "native" for the device ratio up to 2. Level 0 is the floor. */
-const LEVELS: (number | "native")[] = [0.6, 0.8, 1, "native"];
+const LEVELS: PixelRatioFactor[] = [0.6, 0.8, 1, "native"];
+
+// Half of the widest plane (landscape, 1.15 wide), in scene units before the responsive scale.
+const PLANE_HALF_WIDTH = 0.575;
+// Deepest plane z is -1; the warp only moves planes toward the camera (u_progress is negative), which
+// never brings an off-screen plane back in, so the deepest slot gives the widest view to test against.
+const FARTHEST_PLANE_DISTANCE = CAMERA_Z + 1;
 
 export interface PhotographyOptions {
   /** Called when a transition starts, so the page can run its title, subtitle and scrollbar timeline. */
@@ -102,7 +115,9 @@ export function createPhotography(
   let renderer: WebGLRenderer | null = null;
   let view = { width: 1, height: 1 };
   let basePixelRatio = 1;
-  let level = 2;
+  let pixelRatioFactor = levelAt(LEVELS, 2);
+  // Largest |x| in scene units, before the responsive scale, a plane can have and still touch the screen.
+  let visibleHalfWidth = Infinity;
   let dirty = true;
   let parallaxTime = 0;
   let deferredStarted = false;
@@ -175,15 +190,10 @@ export function createPhotography(
     });
   };
 
-  const applyPixelRatio = () => {
+  const syncPixelRatio = () => {
     if (!renderer) return;
-    const factor = LEVELS[level]!;
-    renderer.setPixelRatio(
-      factor === "native"
-        ? Math.max(basePixelRatio, Math.min(window.devicePixelRatio, 2))
-        : basePixelRatio * factor,
-    );
-    dirty = true;
+    const ratio = resolvePixelRatio(basePixelRatio, pixelRatioFactor);
+    if (applyPixelRatio(renderer, ratio)) dirty = true;
   };
 
   const applySize = (size: ViewportSize) => {
@@ -194,6 +204,11 @@ export function createPhotography(
     const scale = sceneScale(size.width);
     root.scale.set(scale, scale, 1);
     uniforms.u_scale.value = scale;
+    visibleHalfWidth =
+      (Math.tan((FOV * Math.PI) / 360) *
+        FARTHEST_PLANE_DISTANCE *
+        camera.aspect) /
+      scale;
     dirty = true;
   };
 
@@ -233,7 +248,7 @@ export function createPhotography(
 
     mount(_assets, ctx) {
       renderer = ctx.renderer;
-      level = Math.max(0, Math.min(LEVELS.length - 1, ctx.quality));
+      pixelRatioFactor = levelAt(LEVELS, ctx.quality);
       slider = createSlider({
         count: TRIPS.length,
         letters: TRIPS.map((trip) => letterCount(trip.title)),
@@ -241,7 +256,7 @@ export function createPhotography(
         onStep: (step) => options.onStep?.(step),
       });
       applySize(ctx.size);
-      applyPixelRatio();
+      syncPixelRatio();
     },
 
     update(dt) {
@@ -255,6 +270,11 @@ export function createPhotography(
             PLANE_X[plane.index]! +
             plane.parallax.x;
           plane.mesh.position.y = plane.baseY + plane.parallax.y;
+          plane.mesh.visible = isPlaneOnScreen(
+            plane.mesh.position.x,
+            PLANE_HALF_WIDTH,
+            visibleHalfWidth,
+          );
         }
         renderer.render(scene, camera);
         dirty = false;
@@ -266,13 +286,13 @@ export function createPhotography(
     },
 
     setQuality(next) {
-      level = Math.max(0, Math.min(LEVELS.length - 1, next));
-      applyPixelRatio();
+      pixelRatioFactor = levelAt(LEVELS, next);
+      syncPixelRatio();
     },
 
     resize(size) {
+      // The host already resized the buffer and the base ratio is fixed, so only the camera and scale change.
       applySize(size);
-      applyPixelRatio();
     },
 
     input(pointer) {

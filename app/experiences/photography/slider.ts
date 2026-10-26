@@ -59,6 +59,15 @@ export function slideUrls(trip: Trip): string[] {
   );
 }
 
+/** False when a plane centred at `x` lies strictly beyond `visibleHalfWidth`, so it can be skipped. */
+export function isPlaneOnScreen(
+  x: number,
+  halfWidth: number,
+  visibleHalfWidth: number,
+): boolean {
+  return Math.abs(x) - halfWidth <= visibleHalfWidth;
+}
+
 export function letterCount(title: string): number {
   return title.replace(/\s/g, "").length;
 }

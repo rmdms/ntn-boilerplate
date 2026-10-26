@@ -58,7 +58,7 @@ export function createQualityGovernor(): QualityGovernor {
   };
 
   const stats = (): WindowStats => {
-    const sorted = frames.slice(0, count).sort();
+    const sorted = frames.subarray(0, count).sort();
     const at = (ratio: number) =>
       sorted[Math.min(count - 1, Math.floor(ratio * count))]!;
     return { median: at(0.5), p90: at(0.9) };

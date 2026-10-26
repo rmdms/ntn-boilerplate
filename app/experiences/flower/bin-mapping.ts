@@ -1,5 +1,7 @@
-/** Analyser FFT size (KTD7 caps it at 2048). */
-export const FFT_SIZE = 2048;
+import { MAX_FFT_SIZE } from "../core/audio";
+
+/** Analyser FFT size: the largest the audio system allows. */
+export const FFT_SIZE = MAX_FFT_SIZE;
 
 /**
  * Bins spread over the sphere: the lower half of the analyser output, which is the
