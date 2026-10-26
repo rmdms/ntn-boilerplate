@@ -3,7 +3,12 @@ import { gsap } from 'gsap'
 
 type Orientation = 'vertical' | 'horizontal'
 
-defineProps<{ images: { src: string, orientation: Orientation }[] }>()
+const props = defineProps<{ prefix: string, orientations: string }>()
+
+const images = computed(() => [...props.orientations].map((code, index) => ({
+  src: `/images/${props.prefix}_${String(index + 1).padStart(2, '0')}.jpg`,
+  orientation: (code === 'V' ? 'vertical' : 'horizontal') as Orientation
+})))
 
 const SIZES: Record<Orientation, string> = {
   vertical: '100vw md:60vw',

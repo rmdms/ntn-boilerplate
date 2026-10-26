@@ -60,7 +60,7 @@ onBeforeUnmount(() => ctx?.revert())
 </script>
 
 <template>
-  <main id="main" ref="main">
+  <main id="main" ref="main" class="experience-page">
     <NuxtLink class="link__back" to="/">Rémy Dumas</NuxtLink>
 
     <div id="content">
@@ -92,34 +92,16 @@ onBeforeUnmount(() => ctx?.revert())
   height: calc(100vh - 10vh);
   height: calc(100dvh - 10dvh);
 }
-#main .link__back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  z-index: 2;
-}
-#main .text_ref {
-  position: absolute;
+#main.experience-page .text_ref {
   bottom: 0;
   right: 0;
-  font-size: 14px;
-  opacity: 0.5;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  z-index: 2;
+  left: auto;
+  transform: none;
 }
-#main .text_informations {
-  position: absolute;
+#main.experience-page .text_informations {
   bottom: 0;
   left: 0;
-  font-size: 14px;
-  opacity: 0.5;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  z-index: 2;
+  transform: none;
 }
 #main #content {
   position: relative;
@@ -265,12 +247,12 @@ onBeforeUnmount(() => ctx?.revert())
   }
 }
 @media (max-width: 600px) {
-  #main .text_ref {
+  #main.experience-page .text_ref {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
   }
-  #main .text_informations {
+  #main.experience-page .text_informations {
     bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
